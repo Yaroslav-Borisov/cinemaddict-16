@@ -11,6 +11,6 @@ export const createShowMoreTemplate = () => {
     return `<button class="films-list__show-more">Show more</button>`
 }
 
-export const createFilmTotalCountTemplate = () => {
-    return `<p>130 291 movies inside</p>`
+export const createFilmTotalCountTemplate = (films) => {
+    return `<p>${films.length} movies inside</p>`
 }
