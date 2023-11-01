@@ -58,9 +58,9 @@ const initFilmCardEvents = () => {
 // Описываем работу кнопки Show More
 
 const initShowMoreEvents = (films) => {
-    
+
     let showMoreButton = filmsListElement.querySelector('.films-list__show-more')
-    
+
     if (showMoreButton !== null) {
         showMoreButton.remove()
         renderTemplate(filmsListElement, createShowMoreTemplate(), RenderPosition.BEFOREEND)
@@ -68,16 +68,16 @@ const initShowMoreEvents = (films) => {
 
         renderTemplate(filmsListElement, createShowMoreTemplate(), RenderPosition.BEFOREEND)
     }
-    
+
     showMoreButton = filmsListElement.querySelector('.films-list__show-more')
     const FILMS_CARD_COUNT_PER_STEP = 5
 
     if (films.length > FILMS_CARD_COUNT_PER_STEP) {
-    
+
         showMoreButton.addEventListener('click', (evt) => {
             evt.preventDefault()
             FILMS_CARD_COUNT += FILMS_CARD_COUNT_PER_STEP
-    
+
             if (FILMS_CARD_COUNT >= films.length) {
                 renderFilmCards(films.length, films)
                 showMoreButton.remove()
@@ -104,9 +104,7 @@ let FILMS_CARD_COUNT = 5
 renderFilmCards(FILMS_CARD_COUNT, films)
 initShowMoreEvents(films)
 
-
-
-// Работа фильтров
+// Описываем работу верхних фильтров
 
 const filters = mainElement.querySelectorAll('.main-navigation__item')
 
@@ -115,28 +113,28 @@ filters.forEach((filter) => {
     filter.addEventListener('click', () => {
         FILMS_CARD_COUNT = 5
         const filterName = filter.getAttribute('data-name')
-        
+
         const filterFilms = (filterName) => {
             let filteredFilms = films.filter((film) => {
                 if (film[filterName]) return film
             })
-           return filteredFilms
+            return filteredFilms
         }
 
-        switch(filterName) {
-            case 'isWatchlist' : 
+        switch (filterName) {
+            case 'isWatchlist':
                 renderFilmCards(FILMS_CARD_COUNT, filterFilms('isWatchlist'))
                 initShowMoreEvents(filterFilms('isWatchlist'))
                 break
-            case 'isWatched' : 
+            case 'isWatched':
                 renderFilmCards(FILMS_CARD_COUNT, filterFilms('isWatched'))
                 initShowMoreEvents(filterFilms('isWatched'))
                 break
-            case 'isFavorite' : 
+            case 'isFavorite':
                 renderFilmCards(FILMS_CARD_COUNT, filterFilms('isFavorite'))
                 initShowMoreEvents(filterFilms('isFavorite'))
                 break
-            case 'all-films' :
+            case 'all-films':
                 renderFilmCards(FILMS_CARD_COUNT, films)
                 initShowMoreEvents(films)
         }
