@@ -85,8 +85,7 @@ const generateDate = () => {
 export const generateFilm = () => {
 
     const filmTitleElement = getRandomElementArr(FILM_TITLES)
-    const filmTitle = filmTitleElement[0]
-    const filmOriginalTitle = filmTitleElement[1]
+    const [filmTitle, filmOriginalTitle] = filmTitleElement
 
     return {
         isWatchlist: getRandomBoolean(),
@@ -95,7 +94,7 @@ export const generateFilm = () => {
         image: getRandomElementArr(FILM_POSTERS),
         title: filmTitle,
         originalTitle: filmOriginalTitle,
-        rating: getRandomInt(1, 9) + '.' + getRandomInt(0, 9),
+        rating: `${getRandomInt(0, 9)}.${getRandomInt(0, 9)}`,
         director: getRandomElementArr(FILM_CAST_NAMES),
         screenwriters: generateNamesList(FILM_CAST_NAMES),
         cast: generateNamesList(FILM_CAST_NAMES),
@@ -104,7 +103,7 @@ export const generateFilm = () => {
         genres: generateGenreList(FILM_GENRES),
         description: generateDescription(),
         country: generateCountriesList(FILM_COUNTRIES),
-        ageRating: getRandomInt(6, 21) + '+',
+        ageRating: `${getRandomInt(6, 21)}+`,
         commentsNumber: getRandomInt(0, 5)
     }
 }

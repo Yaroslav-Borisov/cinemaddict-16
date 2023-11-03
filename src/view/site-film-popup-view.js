@@ -1,13 +1,8 @@
-export const createFilmPopapTemplate = (filmCard) => {
+export const createFilmPopupTemplate = (filmCard) => {
     const { title, rating, ageRating, originalTitle, director, screenwriters, cast, releaseYear, duration, country, genres, image, description, commentsNumber, isWatchlist, isWatched, isFavorite } = filmCard
 
     const renderFilmGenres = (genres) => {
-        const genresHtml = []
-
-        genres.forEach(genre => {
-            genresHtml.push(`<span class="film-details__genre">${genre}</span>`)
-        })
-
+        const genresHtml = genres.map((genre) => `<span class="film-details__genre">${genre}</span>`)
         return genresHtml.join('\n')
     }
 

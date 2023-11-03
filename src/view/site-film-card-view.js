@@ -1,5 +1,4 @@
-export const createFilmCardTemplate = (filmCard) => {
-    const { title, rating, releaseYear, duration, genres, image, description, commentsNumber, isWatchlist, isWatched, isFavorite } = filmCard
+export const createFilmCardTemplate = ({title, rating, releaseYear, duration, genres, image, description, commentsNumber, isWatchlist, isWatched, isFavorite }) => {
 
     return `<article class="film-card">
                 <a class="film-card__link">

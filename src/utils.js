@@ -26,18 +26,6 @@ export const RenderPosition = {
     BEFOREBEGIN: 'beforebegin'
 }
 
-export const closePopup = (Popup) => {
-    Popup.remove()
-}
-
-export const escClosePopup = (Popup) => {
-    document.addEventListener('keydown', (evt) => {
-        if (evt.key === Keys.ESC || evt.key === Keys.ESCAPE) {
-            closePopup(Popup)
-        }
-    })
-}
-
 export const renderTemplate = (root, template, position) => {
     root.insertAdjacentHTML(position, template)
 }
