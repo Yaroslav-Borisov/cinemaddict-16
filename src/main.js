@@ -41,33 +41,32 @@ const initFilmCardEvents = () => {
 
     filmCardElments.forEach((filmCardElement, i) => {
         filmCardElement.addEventListener('click', () => {
-            const closePopup = (Popup) => {
-                Popup.remove()
+
+            const closePopup = () => {
+                bodyElement.lastChild.remove()
+                bodyElement.classList.remove('hide-overflow')
             }
 
-            const escClosePopup = (Popup) => {
-                document.addEventListener('keydown', (evt) => {
-                    if (evt.key === Keys.ESC || evt.key === Keys.ESCAPE) {
-                        closePopup(Popup)
-                    }
-                })
+            let filmPopupElement = new SiteFilmPopupView(films[i])
+
+            if (filmPopupElement !== null && bodyElement.lastChild.classList.contains('film-details')) {
+                closePopup()
             }
 
-            let filmPopupElement = bodyElement.querySelector('.film-details')
+            render(bodyElement, filmPopupElement.element, RenderPosition.BEFOREEND)
+            bodyElement.classList.add('hide-overflow')
 
-            if (filmPopupElement !== null) {
-                closePopup(filmPopupElement)
-            }
-
-            render(bodyElement, new SiteFilmPopupView(films[i]).element, RenderPosition.BEFOREEND)
-
-            filmPopupElement = bodyElement.querySelector('.film-details')
-            const filmPopupCloseButton = bodyElement.querySelector('.film-details__close-btn')
+            const filmPopupCloseButton = filmPopupElement.element.querySelector('.film-details__close-btn')
 
             filmPopupCloseButton.addEventListener('click', () => {
-                closePopup(filmPopupElement)
+                closePopup()
             })
-            escClosePopup(filmPopupElement)
+
+            document.addEventListener('keydown', (evt) => {
+                if (evt.key === 'Esc' || evt.key === 'Escape') {
+                    closePopup()
+                }
+            })
         })
     })
 }
