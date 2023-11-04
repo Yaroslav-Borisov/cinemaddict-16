@@ -1,35 +1,36 @@
 import { generateFilm } from './mock/film.js'
-import { RenderPosition, closePopup, escClosePopup, renderTemplate } from './utils.js'
-import { createFilmCardTemplate } from './view/site-film-card-view.js'
-import { createFilmPopupTemplate } from './view/site-film-popup-view.js'
-import { createFilmsListTemplate } from './view/site-films-list-view.js'
-import { createFiltersTemplate } from './view/site-filters-view.js'
-import { createFooterTemplate } from './view/site-footer-view.js'
-import { createHeaderTemplate } from './view/site-header-view.js'
-import { createMainTemplate } from './view/site-main-view.js'
-import { createMenuTemplate } from './view/site-menu-view.js'
-import { createShowMoreTemplate } from './view/site-show-more-view.js'
-import { createUserRankTemplate } from './view/site-user-rank-view.js'
+import { RenderPosition, render } from './utils.js'
+import SiteFilmCardView from './view/site-film-card-view.js'
+import SiteFilmPopupView from './view/site-film-popup-view.js'
+import SiteFilmsListView from './view/site-films-list-view.js'
+import SiteFiltersView from './view/site-filters-view.js'
+import SiteFooterView from './view/site-footer-view.js'
+import SiteHeaderView from './view/site-header-view.js'
+import SiteMainView from './view/site-main-view.js'
+import SiteMenuView from './view/site-menu-view.js'
+import SiteShowMoreView from './view/site-show-more-view.js'
+import SiteUserRankView from './view/site-user-rank-view.js'
 
 const bodyElement = document.body
-renderTemplate(bodyElement, createHeaderTemplate(), RenderPosition.BEFOREEND)
-renderTemplate(bodyElement, createMainTemplate(), RenderPosition.BEFOREEND)
+const headerElement = new SiteHeaderView()
+const mainElement = new SiteMainView()
 
-const headerElement = bodyElement.querySelector('#header')
-renderTemplate(headerElement, createUserRankTemplate(), RenderPosition.BEFOREEND)
+render(bodyElement, headerElement.element, RenderPosition.BEFOREEND)
+render(bodyElement, mainElement.element, RenderPosition.BEFOREEND)
+
+render(headerElement.element, new SiteUserRankView().element, RenderPosition.BEFOREEND)
 
 const ALL_FILMS_COUNT = 22
 const films = Array.from({ length: ALL_FILMS_COUNT }, generateFilm)
 
-const mainElement = bodyElement.querySelector('#main')
-renderTemplate(mainElement, createMenuTemplate(films), RenderPosition.BEFOREEND)
-renderTemplate(mainElement, createFiltersTemplate(), RenderPosition.BEFOREEND)
-renderTemplate(mainElement, createFilmsListTemplate(), RenderPosition.BEFOREEND)
+render(mainElement.element, new SiteMenuView(films).element, RenderPosition.BEFOREEND)
+render(mainElement.element, new SiteFiltersView().element, RenderPosition.BEFOREEND)
+render(mainElement.element, new SiteFilmsListView().element, RenderPosition.BEFOREEND)
 
-const filmsListElement = mainElement.querySelector('.films-list')
+const filmsListElement = document.querySelector('.films-list')
 const filmsContainerElement = filmsListElement.querySelector('.films-list__container')
 
-renderTemplate(bodyElement, createFooterTemplate(films.length), RenderPosition.BEFOREEND)
+render(bodyElement, new SiteFooterView(films.length).element, RenderPosition.BEFOREEND)
 
 
 // Код ниже пока в главном файле, так как нам ещё не объясняли, куда это переносить
@@ -58,7 +59,7 @@ const initFilmCardEvents = () => {
                 closePopup(filmPopupElement)
             }
 
-            renderTemplate(bodyElement, createFilmPopupTemplate(films[i]), RenderPosition.BEFOREEND)
+            render(bodyElement, new SiteFilmPopupView(films[i]).element, RenderPosition.BEFOREEND)
 
             filmPopupElement = bodyElement.querySelector('.film-details')
             const filmPopupCloseButton = bodyElement.querySelector('.film-details__close-btn')
@@ -81,7 +82,7 @@ const initShowMoreEvents = (films) => {
         showMoreButton.remove()
     }
 
-    renderTemplate(filmsListElement, createShowMoreTemplate(), RenderPosition.BEFOREEND)
+    render(filmsListElement, new SiteShowMoreView().element, RenderPosition.BEFOREEND)
 
     showMoreButton = filmsListElement.querySelector('.films-list__show-more')
     const FILMS_CARD_COUNT_PER_STEP = 5
@@ -90,13 +91,13 @@ const initShowMoreEvents = (films) => {
 
         showMoreButton.addEventListener('click', (evt) => {
             evt.preventDefault()
-            START_FILMS_CARD_COUNT += FILMS_CARD_COUNT_PER_STEP
+            startFilmsCardCount += FILMS_CARD_COUNT_PER_STEP
 
-            if (START_FILMS_CARD_COUNT >= films.length) {
+            if (startFilmsCardCount >= films.length) {
                 showMoreButton.remove()
             }
 
-            renderFilmCards(START_FILMS_CARD_COUNT, films)
+            renderFilmCards(startFilmsCardCount, films)
 
         })
     }
@@ -108,24 +109,24 @@ const renderFilmCards = (counts, films) => {
     filmsContainerElement.innerHTML = ''
 
     for (let i = 0; i < counts; i++) {
-        renderTemplate(filmsContainerElement, createFilmCardTemplate(films[i]), RenderPosition.BEFOREEND)
+        render(filmsContainerElement, new SiteFilmCardView(films[i]).element, RenderPosition.BEFOREEND)
     }
 
     initFilmCardEvents()
 }
 
-let START_FILMS_CARD_COUNT = 5
-renderFilmCards(START_FILMS_CARD_COUNT, films)
+let startFilmsCardCount = 5
+renderFilmCards(startFilmsCardCount, films)
 initShowMoreEvents(films)
 
 // Описываем работу верхних фильтров
 
-const filters = mainElement.querySelectorAll('.main-navigation__item')
+const filters = document.querySelectorAll('.main-navigation__item')
 
 
 filters.forEach((filter) => {
     filter.addEventListener('click', () => {
-        START_FILMS_CARD_COUNT = 5
+        startFilmsCardCount = 5
         const filterName = filter.getAttribute('data-name')
 
         const filterFilms = (filterName) => {
@@ -136,11 +137,11 @@ filters.forEach((filter) => {
         }
 
         if (filterName === 'all-films') {
-            START_FILMS_CARD_COUNT = 5
-            renderFilmCards(START_FILMS_CARD_COUNT, films)
+            startFilmsCardCount = 5
+            renderFilmCards(startFilmsCardCount, films)
             initShowMoreEvents(films)
         } else {
-            renderFilmCards(START_FILMS_CARD_COUNT, filterFilms(filterName))
+            renderFilmCards(startFilmsCardCount, filterFilms(filterName))
             initShowMoreEvents(filterFilms(filterName))
         }
     })

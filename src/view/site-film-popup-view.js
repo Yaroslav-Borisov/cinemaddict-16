@@ -1,4 +1,6 @@
-export const createFilmPopupTemplate = (filmCard) => {
+import { createElement } from '../utils.js'
+
+const createFilmPopupTemplate = (filmCard) => {
     const { title, rating, ageRating, originalTitle, director, screenwriters, cast, releaseYear, duration, country, genres, image, description, commentsNumber, isWatchlist, isWatched, isFavorite } = filmCard
 
     const renderFilmGenres = (genres) => {
@@ -118,4 +120,29 @@ export const createFilmPopupTemplate = (filmCard) => {
       </div>
     </form>
   </section>`
+}
+
+export default class SiteFilmPopupView {
+  #element = null
+  #film = null
+
+  constructor(film) {
+      this.#film = film
+  }
+
+  get element() {
+      if (!this.#element) {
+          this.#element = createElement(this.template)
+      }
+
+      return this.#element
+  }
+
+  get template() {
+      return createFilmPopupTemplate(this.#film)
+  }
+
+  removeElement() {
+      this.#element = null
+  }
 }
