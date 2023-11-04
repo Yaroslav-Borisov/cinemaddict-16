@@ -21,8 +21,9 @@ render(bodyElement, mainElement.element, RenderPosition.BEFOREEND)
 
 render(headerElement.element, new SiteUserRankView().element, RenderPosition.BEFOREEND)
 
-const ALL_FILMS_COUNT = 0
+const ALL_FILMS_COUNT = 22
 const films = Array.from({ length: ALL_FILMS_COUNT }, generateFilm)
+let startFilmsCardCount = 5
 
 render(mainElement.element, new SiteMenuView(films).element, RenderPosition.BEFOREEND)
 render(mainElement.element, new SiteFiltersView().element, RenderPosition.BEFOREEND)
@@ -47,24 +48,25 @@ const initFilmCardEvents = () => {
                 bodyElement.classList.remove('hide-overflow')
             }
 
-            let filmPopupElement = new SiteFilmPopupView(films[i])
+            let filmPopup = new SiteFilmPopupView(films[i])
 
-            if (filmPopupElement !== null && bodyElement.lastChild.classList.contains('film-details')) {
-                closePopup(filmPopupElement)
+            if (filmPopup !== null && bodyElement.lastChild.classList.contains('film-details')) {
+                bodyElement.querySelector('.film-details').remove()
             }
 
-            render(bodyElement, filmPopupElement.element, RenderPosition.BEFOREEND)
+
+            render(bodyElement, filmPopup.element, RenderPosition.BEFOREEND)
             bodyElement.classList.add('hide-overflow')
 
-            const filmPopupCloseButton = filmPopupElement.element.querySelector('.film-details__close-btn')
+            const filmPopupCloseButton = filmPopup.element.querySelector('.film-details__close-btn')
 
             filmPopupCloseButton.addEventListener('click', () => {
-                closePopup(filmPopupElement)
+                closePopup(filmPopup)
             })
 
             document.addEventListener('keydown', (evt) => {
                 if (evt.key === 'Esc' || evt.key === 'Escape') {
-                    closePopup(filmPopupElement)
+                    closePopup(filmPopup)
                 }
             })
         })
@@ -118,7 +120,6 @@ if (films.length === 0){
     filmsListElement.remove()
     render(mainElement.element, new SiteEmptyFilmsListView().element, RenderPosition.BEFOREEND)
 } else {
-    let startFilmsCardCount = 5
     renderFilmCards(startFilmsCardCount, films)
     initShowMoreEvents(films)
 }
