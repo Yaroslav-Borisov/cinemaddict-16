@@ -1,5 +1,6 @@
 import { generateFilm } from './mock/film.js'
 import { RenderPosition, render } from './utils.js'
+import SiteEmptyFilmsListView from './view/site-empty-films-list-view.js'
 import SiteFilmCardView from './view/site-film-card-view.js'
 import SiteFilmPopupView from './view/site-film-popup-view.js'
 import SiteFilmsListView from './view/site-films-list-view.js'
@@ -20,7 +21,7 @@ render(bodyElement, mainElement.element, RenderPosition.BEFOREEND)
 
 render(headerElement.element, new SiteUserRankView().element, RenderPosition.BEFOREEND)
 
-const ALL_FILMS_COUNT = 22
+const ALL_FILMS_COUNT = 0
 const films = Array.from({ length: ALL_FILMS_COUNT }, generateFilm)
 
 render(mainElement.element, new SiteMenuView(films).element, RenderPosition.BEFOREEND)
@@ -31,7 +32,6 @@ const filmsListElement = document.querySelector('.films-list')
 const filmsContainerElement = filmsListElement.querySelector('.films-list__container')
 
 render(bodyElement, new SiteFooterView(films.length).element, RenderPosition.BEFOREEND)
-
 
 // Код ниже пока в главном файле, так как нам ещё не объясняли, куда это переносить
 // Описываем рендер карточек и добавляем обработчик открытия/закрытия попапа на каждую
@@ -114,9 +114,15 @@ const renderFilmCards = (counts, films) => {
     initFilmCardEvents()
 }
 
-let startFilmsCardCount = 5
-renderFilmCards(startFilmsCardCount, films)
-initShowMoreEvents(films)
+if (films.length === 0){
+    filmsListElement.remove()
+    render(mainElement.element, new SiteEmptyFilmsListView().element, RenderPosition.BEFOREEND)
+} else {
+    let startFilmsCardCount = 5
+    renderFilmCards(startFilmsCardCount, films)
+    initShowMoreEvents(films)
+}
+
 
 // Описываем работу верхних фильтров
 
