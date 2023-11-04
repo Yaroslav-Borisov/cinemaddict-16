@@ -1,4 +1,6 @@
-export const createMenuTemplate = (films) => {
+import { createElement } from '../utils.js'
+
+const createMenuTemplate = (films) => {
 
     const navFilmsCount = {
         isWatchlist: 0,
@@ -28,3 +30,28 @@ export const createMenuTemplate = (films) => {
                 <a href="#stats" class="main-navigation__additional">Stats</a>
             </nav>`
 }
+
+export default class SiteMenuView {
+    #element = null
+    #films = null
+
+    constructor(films) {
+        this.#films = films
+    }
+  
+    get element() {
+        if (!this.#element) {
+            this.#element = createElement(this.template)
+        }
+  
+        return this.#element
+    }
+  
+    get template() {
+        return createMenuTemplate(this.#films)
+    }
+  
+    removeElement() {
+        this.#element = null
+    }
+  }

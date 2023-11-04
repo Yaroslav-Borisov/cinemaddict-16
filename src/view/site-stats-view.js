@@ -1,4 +1,6 @@
-export const createUserStatisticTemplate = () => {
+import { createElement } from '../utils.js'
+
+const createUserStatisticTemplate = () => {
     return `<section class="statistic">
     <p class="statistic__rank" id="stats">
       Your rank
@@ -48,4 +50,24 @@ export const createUserStatisticTemplate = () => {
     </div>
 
   </section>`
+}
+
+export default class SiteStatsView {
+  #element = null
+
+  get element() {
+      if (!this.#element) {
+          this.#element = createElement(this.template)
+      }
+
+      return this.#element
+  }
+
+  get template() {
+      return createUserStatisticTemplate()
+  }
+
+  removeElement() {
+      this.#element = null
+  }
 }

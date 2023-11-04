@@ -1,4 +1,8 @@
-export const createFilmCardTemplate = ({title, rating, releaseYear, duration, genres, image, description, commentsNumber, isWatchlist, isWatched, isFavorite }) => {
+import { createElement } from '../utils.js'
+
+const createFilmCardTemplate = (film) => {
+
+    const {title, rating, releaseYear, duration, genres, image, description, commentsNumber, isWatchlist, isWatched, isFavorite } = film
 
     return `<article class="film-card">
                 <a class="film-card__link">
@@ -20,3 +24,28 @@ export const createFilmCardTemplate = ({title, rating, releaseYear, duration, ge
                 </div>
             </article>`
 }
+
+export default class SiteFilmCardView {
+    #element = null
+    #film = null
+
+    constructor(film) {
+        this.#film = film
+    }
+  
+    get element() {
+        if (!this.#element) {
+            this.#element = createElement(this.template)
+        }
+  
+        return this.#element
+    }
+  
+    get template() {
+        return createFilmCardTemplate(this.#film)
+    }
+  
+    removeElement() {
+        this.#element = null
+    }
+  }
