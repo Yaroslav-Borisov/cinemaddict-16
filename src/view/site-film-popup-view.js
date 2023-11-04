@@ -143,6 +143,7 @@ export default class SiteFilmPopupView {
   }
 
   removeElement() {
+      this.#element.remove()
       this.#element = null
   }
 }

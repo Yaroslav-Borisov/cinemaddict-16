@@ -42,15 +42,15 @@ const initFilmCardEvents = () => {
     filmCardElments.forEach((filmCardElement, i) => {
         filmCardElement.addEventListener('click', () => {
 
-            const closePopup = () => {
-                bodyElement.lastChild.remove()
+            const closePopup = (popup) => {
+                popup.removeElement()
                 bodyElement.classList.remove('hide-overflow')
             }
 
             let filmPopupElement = new SiteFilmPopupView(films[i])
 
             if (filmPopupElement !== null && bodyElement.lastChild.classList.contains('film-details')) {
-                closePopup()
+                closePopup(filmPopupElement)
             }
 
             render(bodyElement, filmPopupElement.element, RenderPosition.BEFOREEND)
@@ -59,12 +59,12 @@ const initFilmCardEvents = () => {
             const filmPopupCloseButton = filmPopupElement.element.querySelector('.film-details__close-btn')
 
             filmPopupCloseButton.addEventListener('click', () => {
-                closePopup()
+                closePopup(filmPopupElement)
             })
 
             document.addEventListener('keydown', (evt) => {
                 if (evt.key === 'Esc' || evt.key === 'Escape') {
-                    closePopup()
+                    closePopup(filmPopupElement)
                 }
             })
         })
@@ -90,7 +90,7 @@ const initShowMoreEvents = (films) => {
 
         showMoreButton.addEventListener('click', (evt) => {
             evt.preventDefault()
-            startFilmsCardCount += FILMS_CARD_COUNT_PER_STEP
+            startFilmsCardCount = Math.min(startFilmsCardCount + FILMS_CARD_COUNT_PER_STEP, ALL_FILMS_COUNT)
 
             if (startFilmsCardCount >= films.length) {
                 showMoreButton.remove()
