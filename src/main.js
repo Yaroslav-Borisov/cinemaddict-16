@@ -1,6 +1,5 @@
 import { generateFilm } from './mock/film.js'
 import { RenderPosition, render } from './utils.js'
-import SiteEmptyFilmsListView from './view/site-empty-films-list-view.js'
 import SiteFilmCardView from './view/site-film-card-view.js'
 import SiteFilmPopupView from './view/site-film-popup-view.js'
 import SiteFilmsListView from './view/site-films-list-view.js'
@@ -27,7 +26,7 @@ let startFilmsCardCount = 5
 
 render(mainElement.element, new SiteMenuView(films).element, RenderPosition.BEFOREEND)
 render(mainElement.element, new SiteFiltersView().element, RenderPosition.BEFOREEND)
-render(mainElement.element, new SiteFilmsListView().element, RenderPosition.BEFOREEND)
+render(mainElement.element, new SiteFilmsListView(films.length).element, RenderPosition.BEFOREEND)
 
 const filmsListElement = document.querySelector('.films-list')
 const filmsContainerElement = filmsListElement.querySelector('.films-list__container')
@@ -116,13 +115,11 @@ const renderFilmCards = (counts, films) => {
     initFilmCardEvents()
 }
 
-if (films.length === 0){
-    filmsListElement.remove()
-    render(mainElement.element, new SiteEmptyFilmsListView().element, RenderPosition.BEFOREEND)
-} else {
+if (ALL_FILMS_COUNT !== 0) {
     renderFilmCards(startFilmsCardCount, films)
     initShowMoreEvents(films)
 }
+
 
 
 // Описываем работу верхних фильтров

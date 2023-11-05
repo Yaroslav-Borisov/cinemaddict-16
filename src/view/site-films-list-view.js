@@ -1,9 +1,9 @@
 import { createElement } from '../utils.js'
 
-const createFilmsListTemplate = () => {
+const createFilmsListTemplate = (filmsCount) => {
     return `<section class="films">
                 <section class="films-list">
-                    <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
+                    ${filmsCount === 0 ? '<h2 class="films-list__title">There are no movies in our database</h2>' : '<h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>'}
                     <div class="films-list__container"></div>
                 </section>
             </section>`
@@ -11,6 +11,11 @@ const createFilmsListTemplate = () => {
 
 export default class SiteFilmsListView {
     #element = null
+    #filmsCount = null
+
+    constructor(filmsCount) {
+        this.#filmsCount = filmsCount
+    }
 
     get element() {
         if (!this.#element) {
@@ -21,7 +26,7 @@ export default class SiteFilmsListView {
     }
 
     get template() {
-        return createFilmsListTemplate()
+        return createFilmsListTemplate(this.#filmsCount)
     }
 
     removeElement() {
