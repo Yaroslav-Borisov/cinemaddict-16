@@ -1,4 +1,4 @@
-import { createElement } from '../utils.js'
+import AbstractView from './abstract-view.js'
 
 const createFilmPopupTemplate = (filmCard) => {
     const { title, rating, ageRating, originalTitle, director, screenwriters, cast, releaseYear, duration, country, genres, image, description, commentsNumber, isWatchlist, isWatched, isFavorite } = filmCard
@@ -122,28 +122,19 @@ const createFilmPopupTemplate = (filmCard) => {
   </section>`
 }
 
-export default class SiteFilmPopupView {
-  #element = null
+export default class SiteFilmPopupView extends AbstractView {
   #film = null
 
   constructor(film) {
+      super()
       this.#film = film
-  }
-
-  get element() {
-      if (!this.#element) {
-          this.#element = createElement(this.template)
-      }
-
-      return this.#element
   }
 
   get template() {
       return createFilmPopupTemplate(this.#film)
   }
 
-  removeElement() {
-      this.#element.remove()
-      this.#element = null
+  get removeElement() {
+      this.element.remove()
   }
 }

@@ -1,4 +1,4 @@
-import { createElement } from '../utils.js'
+import AbstractView from './abstract-view.js'
 
 const createHeaderTemplate = () => {
     return `<header class="header" id="header">
@@ -6,22 +6,8 @@ const createHeaderTemplate = () => {
             </header>`
 }
 
-export default class SiteHeaderView {
-    #element = null
-
-    get element() {
-        if (!this.#element) {
-            this.#element = createElement(this.template)
-        }
-
-        return this.#element
-    }
-
+export default class SiteHeaderView extends AbstractView {
     get template() {
         return createHeaderTemplate()
-    }
-
-    removeElement() {
-        this.#element = null
     }
 }

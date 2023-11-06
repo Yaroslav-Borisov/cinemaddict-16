@@ -15,23 +15,23 @@ const bodyElement = document.body
 const headerElement = new SiteHeaderView()
 const mainElement = new SiteMainView()
 
-render(bodyElement, headerElement.element, RenderPosition.BEFOREEND)
-render(bodyElement, mainElement.element, RenderPosition.BEFOREEND)
+render(bodyElement, headerElement, RenderPosition.BEFOREEND)
+render(bodyElement, mainElement, RenderPosition.BEFOREEND)
 
-render(headerElement.element, new SiteUserRankView().element, RenderPosition.BEFOREEND)
+render(headerElement, new SiteUserRankView(), RenderPosition.BEFOREEND)
 
 const ALL_FILMS_COUNT = 22
 const films = Array.from({ length: ALL_FILMS_COUNT }, generateFilm)
 let startFilmsCardCount = 5
 
-render(mainElement.element, new SiteMenuView(films).element, RenderPosition.BEFOREEND)
-render(mainElement.element, new SiteFiltersView().element, RenderPosition.BEFOREEND)
-render(mainElement.element, new SiteFilmsListView(films.length).element, RenderPosition.BEFOREEND)
+render(mainElement, new SiteMenuView(films), RenderPosition.BEFOREEND)
+render(mainElement, new SiteFiltersView(), RenderPosition.BEFOREEND)
+render(mainElement, new SiteFilmsListView(films.length), RenderPosition.BEFOREEND)
 
 const filmsListElement = document.querySelector('.films-list')
 const filmsContainerElement = filmsListElement.querySelector('.films-list__container')
 
-render(bodyElement, new SiteFooterView(films.length).element, RenderPosition.BEFOREEND)
+render(bodyElement, new SiteFooterView(films.length), RenderPosition.BEFOREEND)
 
 // Код ниже пока в главном файле, так как нам ещё не объясняли, куда это переносить
 // Описываем рендер карточек и добавляем обработчик открытия/закрытия попапа на каждую
@@ -40,10 +40,10 @@ const initFilmCardEvents = () => {
     const filmCardElments = filmsContainerElement.querySelectorAll('.film-card__link')
 
     filmCardElments.forEach((filmCardElement, i) => {
-        filmCardElement.addEventListener('click', () => {
+        filmCardElement.setEditClickHandler(() => {
 
             const closePopup = (popup) => {
-                popup.removeElement()
+                popup.removeElement
                 bodyElement.classList.remove('hide-overflow')
             }
 
@@ -53,8 +53,7 @@ const initFilmCardEvents = () => {
                 bodyElement.querySelector('.film-details').remove()
             }
 
-
-            render(bodyElement, filmPopup.element, RenderPosition.BEFOREEND)
+            render(bodyElement, filmPopup, RenderPosition.BEFOREEND)
             bodyElement.classList.add('hide-overflow')
 
             const filmPopupCloseButton = filmPopup.element.querySelector('.film-details__close-btn')
@@ -82,7 +81,7 @@ const initShowMoreEvents = (films) => {
         showMoreButton.remove()
     }
 
-    render(filmsListElement, new SiteShowMoreView().element, RenderPosition.BEFOREEND)
+    render(filmsListElement, new SiteShowMoreView(), RenderPosition.BEFOREEND)
 
     showMoreButton = filmsListElement.querySelector('.films-list__show-more')
     const FILMS_CARD_COUNT_PER_STEP = 5

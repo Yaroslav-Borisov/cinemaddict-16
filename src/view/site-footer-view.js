@@ -1,4 +1,4 @@
-import { createElement } from '../utils.js'
+import AbstractView from './abstract-view.js'
 
 const createFooterTemplate = (filmsCount) => {
     return `<footer class="footer">
@@ -9,27 +9,15 @@ const createFooterTemplate = (filmsCount) => {
             </footer>`
 }
 
-export default class SiteFooterView {
-    #element = null
+export default class SiteFooterView extends AbstractView {
     #filmsCount = null
   
     constructor(filmsCount) {
+        super()
         this.#filmsCount = filmsCount
     }
-  
-    get element() {
-        if (!this.#element) {
-            this.#element = createElement(this.template)
-        }
-  
-        return this.#element
-    }
-  
+
     get template() {
         return createFooterTemplate(this.#filmsCount)
-    }
-  
-    removeElement() {
-        this.#element = null
     }
   }

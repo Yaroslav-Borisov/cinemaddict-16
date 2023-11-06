@@ -1,4 +1,4 @@
-import { createElement } from '../utils.js'
+import AbstractView from './abstract-view.js'
 
 const createFilmCardTemplate = (film) => {
 
@@ -25,27 +25,26 @@ const createFilmCardTemplate = (film) => {
             </article>`
 }
 
-export default class SiteFilmCardView {
-    #element = null
+export default class SiteFilmCardView extends AbstractView {
     #film = null
 
     constructor(film) {
+        super()
         this.#film = film
-    }
-  
-    get element() {
-        if (!this.#element) {
-            this.#element = createElement(this.template)
-        }
-  
-        return this.#element
     }
   
     get template() {
         return createFilmCardTemplate(this.#film)
     }
-  
-    removeElement() {
-        this.#element = null
+
+    setEditClickHandler = (callback) => {
+        this._callback.editClick = callback
+        this.element.addEventListener('click', this.#editClickHandler)
+    }
+
+    #editClickHandler = (evt) => {
+        evt.preventDefault()
+        
+        this._callback.editClick()
     }
   }
