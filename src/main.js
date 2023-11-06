@@ -33,44 +33,6 @@ const filmsContainerElement = filmsListElement.querySelector('.films-list__conta
 
 render(bodyElement, new SiteFooterView(films.length), RenderPosition.BEFOREEND)
 
-// Код ниже пока в главном файле, так как нам ещё не объясняли, куда это переносить
-// Описываем рендер карточек и добавляем обработчик открытия/закрытия попапа на каждую
-
-const initFilmCardEvents = () => {
-    const filmCardElments = filmsContainerElement.querySelectorAll('.film-card__link')
-
-    filmCardElments.forEach((filmCardElement, i) => {
-        filmCardElement.setEditClickHandler(() => {
-
-            const closePopup = (popup) => {
-                popup.removeElement
-                bodyElement.classList.remove('hide-overflow')
-            }
-
-            let filmPopup = new SiteFilmPopupView(films[i])
-
-            if (filmPopup !== null && bodyElement.lastChild.classList.contains('film-details')) {
-                bodyElement.querySelector('.film-details').remove()
-            }
-
-            render(bodyElement, filmPopup, RenderPosition.BEFOREEND)
-            bodyElement.classList.add('hide-overflow')
-
-            const filmPopupCloseButton = filmPopup.element.querySelector('.film-details__close-btn')
-
-            filmPopupCloseButton.addEventListener('click', () => {
-                closePopup(filmPopup)
-            })
-
-            document.addEventListener('keydown', (evt) => {
-                if (evt.key === 'Esc' || evt.key === 'Escape') {
-                    closePopup(filmPopup)
-                }
-            })
-        })
-    })
-}
-
 // Описываем работу кнопки Show More
 
 const initShowMoreEvents = (films) => {
@@ -108,10 +70,38 @@ const renderFilmCards = (counts, films) => {
     filmsContainerElement.innerHTML = ''
 
     for (let i = 0; i < counts; i++) {
-        render(filmsContainerElement, new SiteFilmCardView(films[i]).element, RenderPosition.BEFOREEND)
-    }
+        const filmCard = new SiteFilmCardView(films[i])
+        filmCard.setEditClickHandler(() => {
 
-    initFilmCardEvents()
+          const closePopup = (popup) => {
+              console.log(popup.removeElement)
+              bodyElement.classList.remove('hide-overflow')
+          }
+
+          let filmPopup = new SiteFilmPopupView(films[i])
+
+          if (filmPopup !== null && bodyElement.lastChild.classList.contains('film-details')) {
+              bodyElement.querySelector('.film-details').remove()
+          }
+
+          render(bodyElement, filmPopup, RenderPosition.BEFOREEND)
+          bodyElement.classList.add('hide-overflow')
+
+          const filmPopupCloseButton = filmPopup.element.querySelector('.film-details__close-btn')
+
+          filmPopupCloseButton.addEventListener('click', () => {
+              closePopup(filmPopup)
+          })
+
+          document.addEventListener('keydown', (evt) => {
+              if (evt.key === 'Esc' || evt.key === 'Escape') {
+                  closePopup(filmPopup)
+              }
+          })
+      })
+
+        render(filmsContainerElement, filmCard, RenderPosition.BEFOREEND)
+    }
 }
 
 if (ALL_FILMS_COUNT !== 0) {
