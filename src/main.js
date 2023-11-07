@@ -109,7 +109,6 @@ if (ALL_FILMS_COUNT !== 0) {
 }
 
 
-
 // Описываем работу верхних фильтров
 
 siteMenu.setEditClickHandler((activeFilter) => {

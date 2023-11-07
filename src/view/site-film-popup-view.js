@@ -18,8 +18,10 @@ const createFilmPopupTemplate = (filmCard) => {
           <div class="film-details__poster">
             <img class="film-details__poster-img" src="./images/posters/${image}" alt="${title}">
 
+
             <p class="film-details__age">${ageRating}</p>
           </div>
+
 
           <div class="film-details__info">
             <div class="film-details__info-head">
@@ -28,10 +30,12 @@ const createFilmPopupTemplate = (filmCard) => {
                 <p class="film-details__title-original">Original: ${originalTitle}</p>
               </div>
 
+
               <div class="film-details__rating">
                 <p class="film-details__total-rating">${rating}</p>
               </div>
             </div>
+
 
             <table class="film-details__table">
               <tr class="film-details__row">
@@ -66,11 +70,13 @@ const createFilmPopupTemplate = (filmCard) => {
               </tr>
             </table>
 
+
             <p class="film-details__film-description">
               ${description}
             </p>
           </div>
         </div>
+
 
         <section class="film-details__controls">
           <button type="button" class="film-details__control-button ${isWatchlist ? 'film-details__control-button--active' : ''} film-details__control-button--watchlist" id="watchlist" name="watchlist">Add to watchlist</button>
@@ -79,20 +85,25 @@ const createFilmPopupTemplate = (filmCard) => {
         </section>
       </div>
 
+
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsNumber}</span></h3>
 
+
           <ul class="film-details__comments-list"></ul>
+
 
           <div class="film-details__new-comment">
             <div class="film-details__add-emoji-label">
               <img src="images/emoji/smile.png" width="55" height="55" alt="emoji-smile">
             </div>
 
+
             <label class="film-details__comment-label">
               <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">Great movie!</textarea>
             </label>
+
 
             <div class="film-details__emoji-list">
               <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile" checked>
@@ -100,15 +111,18 @@ const createFilmPopupTemplate = (filmCard) => {
                 <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
               </label>
 
+
               <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
               <label class="film-details__emoji-label" for="emoji-sleeping">
                 <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
               </label>
 
+
               <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
               <label class="film-details__emoji-label" for="emoji-puke">
                 <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
               </label>
+
 
               <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
               <label class="film-details__emoji-label" for="emoji-angry">

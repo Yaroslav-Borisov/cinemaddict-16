@@ -11,8 +11,6 @@ export default class SiteShowMoreView extends AbstractView {
         return createShowMoreTemplate()
     }
 
-    isRendered = false
-
     setClickHandler = (callback) => {
       this._callback.click = callback
       this.element.addEventListener('click', this.#clickHandler)
