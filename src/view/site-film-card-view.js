@@ -2,7 +2,7 @@ import AbstractView from './abstract-view.js'
 
 const createFilmCardTemplate = (film) => {
 
-    const {title, rating, releaseYear, duration, genres, image, description, commentsNumber, isWatchlist, isWatched, isFavorite } = film
+    const { title, rating, releaseYear, duration, genres, image, description, commentsNumber, isWatchlist, isWatched, isFavorite } = film
 
     return `<article class="film-card">
                 <a class="film-card__link">
@@ -32,7 +32,7 @@ export default class SiteFilmCardView extends AbstractView {
         super()
         this.#film = film
     }
-  
+
     get template() {
         return createFilmCardTemplate(this.#film)
     }
@@ -44,7 +44,6 @@ export default class SiteFilmCardView extends AbstractView {
 
     #editClickHandler = (evt) => {
         evt.preventDefault()
-        
         this._callback.editClick()
     }
-  }
+}

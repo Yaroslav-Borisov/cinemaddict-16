@@ -1,6 +1,6 @@
 import AbstractView from './abstract-view.js'
 
-const createFiltersTemplate = () => {
+const createSortFiltersTemplate = () => {
     return `<ul class="sort">
                 <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
                 <li><a href="#" class="sort__button">Sort by date</a></li>
@@ -8,8 +8,8 @@ const createFiltersTemplate = () => {
             </ul>`
 }
 
-export default class SiteFiltersView extends AbstractView {
+export default class SiteSortFiltersView extends AbstractView {
     get template() {
-        return createFiltersTemplate()
+        return createSortFiltersTemplate()
     }
 }
