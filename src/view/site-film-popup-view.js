@@ -1,4 +1,4 @@
-import { createElement } from '../utils.js'
+import AbstractView from './abstract-view.js'
 
 const createFilmPopupTemplate = (filmCard) => {
     const { title, rating, ageRating, originalTitle, director, screenwriters, cast, releaseYear, duration, country, genres, image, description, commentsNumber, isWatchlist, isWatched, isFavorite } = filmCard
@@ -17,22 +17,26 @@ const createFilmPopupTemplate = (filmCard) => {
         <div class="film-details__info-wrap">
           <div class="film-details__poster">
             <img class="film-details__poster-img" src="./images/posters/${image}" alt="${title}">
-  
+
+
             <p class="film-details__age">${ageRating}</p>
           </div>
-  
+
+
           <div class="film-details__info">
             <div class="film-details__info-head">
               <div class="film-details__title-wrap">
                 <h3 class="film-details__title">${title}</h3>
                 <p class="film-details__title-original">Original: ${originalTitle}</p>
               </div>
-  
+
+
               <div class="film-details__rating">
                 <p class="film-details__total-rating">${rating}</p>
               </div>
             </div>
-  
+
+
             <table class="film-details__table">
               <tr class="film-details__row">
                 <td class="film-details__term">Director</td>
@@ -65,51 +69,61 @@ const createFilmPopupTemplate = (filmCard) => {
                 </td>
               </tr>
             </table>
-  
+
+
             <p class="film-details__film-description">
               ${description}
             </p>
           </div>
         </div>
-  
+
+
         <section class="film-details__controls">
           <button type="button" class="film-details__control-button ${isWatchlist ? 'film-details__control-button--active' : ''} film-details__control-button--watchlist" id="watchlist" name="watchlist">Add to watchlist</button>
           <button type="button" class="film-details__control-button ${isWatched ? 'film-details__control-button--active' : ''} film-details__control-button--watched" id="watched" name="watched">Already watched</button>
           <button type="button" class="film-details__control-button ${isFavorite ? 'film-details__control-button--active' : ''} film-details__control-button--favorite" id="favorite" name="favorite">Add to favorites</button>
         </section>
       </div>
-  
+
+
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsNumber}</span></h3>
-  
+
+
           <ul class="film-details__comments-list"></ul>
-  
+
+
           <div class="film-details__new-comment">
             <div class="film-details__add-emoji-label">
               <img src="images/emoji/smile.png" width="55" height="55" alt="emoji-smile">
             </div>
-  
+
+
             <label class="film-details__comment-label">
               <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">Great movie!</textarea>
             </label>
-  
+
+
             <div class="film-details__emoji-list">
               <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile" checked>
               <label class="film-details__emoji-label" for="emoji-smile">
                 <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
               </label>
-  
+
+
               <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
               <label class="film-details__emoji-label" for="emoji-sleeping">
                 <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
               </label>
-  
+
+
               <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
               <label class="film-details__emoji-label" for="emoji-puke">
                 <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
               </label>
-  
+
+
               <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
               <label class="film-details__emoji-label" for="emoji-angry">
                 <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
@@ -122,28 +136,26 @@ const createFilmPopupTemplate = (filmCard) => {
   </section>`
 }
 
-export default class SiteFilmPopupView {
-  #element = null
+export default class SiteFilmPopupView extends AbstractView {
   #film = null
+  _callback = {}
 
   constructor(film) {
-      this.#film = film
-  }
-
-  get element() {
-      if (!this.#element) {
-          this.#element = createElement(this.template)
-      }
-
-      return this.#element
+    super()
+    this.#film = film
   }
 
   get template() {
       return createFilmPopupTemplate(this.#film)
   }
 
-  removeElement() {
-      this.#element.remove()
-      this.#element = null
+  setCloseClickHandler = (callback) => {
+    this._callback.closeClick = callback
+    this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#closeClickHandler)
+  } 
+
+  #closeClickHandler = (evt) => {
+    evt.preventDefault()
+    this._callback.closeClick()
   }
 }
