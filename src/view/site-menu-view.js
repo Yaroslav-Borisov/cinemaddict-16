@@ -51,9 +51,19 @@ export default class SiteMenuView extends AbstractView {
 
     #editClickHandler = (evt) => {
         evt.preventDefault()
-        const activeFilter = evt.target.getAttribute('data-name')
-        if (activeFilter) {
-            this._callback.editClick?.(activeFilter)
+
+        const menuFilters = this.element.querySelectorAll('.main-navigation__item')
+        menuFilters.forEach((filter) => {
+            filter.classList.remove('main-navigation__item--active')
+        })
+
+        if (evt.target.classList.contains('main-navigation__item')) {
+            evt.target.classList.add('main-navigation__item--active')
+        }
+        
+        const activeMenuFilter = evt.target.getAttribute('data-name')
+        if (activeMenuFilter) {
+            this._callback.editClick?.(activeMenuFilter)
         }
     }
   }
