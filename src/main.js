@@ -8,131 +8,119 @@ import SiteFooterView from './view/site-footer-view.js'
 import SiteHeaderView from './view/site-header-view.js'
 import SiteMainView from './view/site-main-view.js'
 import SiteMenuView from './view/site-menu-view.js'
-import SiteShowMoreView from './view/site-show-more-view.js'
-import SiteUserRankView from './view/site-user-rank-view.js'
-import FilmsListPresenter from './presenter/films-list-presenter.js'
-
-const bodyElement = document.body
-const headerElement = new SiteHeaderView()
-const mainElement = new SiteMainView()
-
-render(bodyElement, headerElement, RenderPosition.BEFOREEND)
-render(headerElement, new SiteUserRankView(), RenderPosition.BEFOREEND)
-
-render(bodyElement, mainElement, RenderPosition.BEFOREEND)
-
 
 const ALL_FILMS_COUNT = 22
 const films = Array.from({ length: ALL_FILMS_COUNT }, generateFilm)
-let startFilmsCardCount = 5
+const FILMS_CARD_COUNT_PER_STEP = 5
+let startFilmCardsCount = 5
 
-const siteMenu = new SiteMenuView(films)
+// РЕНДЕР ГЛАВНЫХ ВНЕШНИХ КОМПОНЕНТОВ
 
-render(mainElement, siteMenu, RenderPosition.BEFOREEND)
-render(mainElement, new SiteSortFiltersView(), RenderPosition.BEFOREEND)
+const headerComponent = new SiteHeaderView()
+const mainComponent = new SiteMainView()
+const footerComponent = new SiteFooterView(films.length)
 
-// const filmsElement = new SiteFilmsListView(films.length)
-// render(mainElement, filmsElement, RenderPosition.BEFOREEND)
+render(document.body, headerComponent, RenderPosition.BEFOREEND)
+render(document.body, mainComponent, RenderPosition.BEFOREEND)
+render(document.body, footerComponent, RenderPosition.BEFOREEND)
 
-// const filmsListElement = filmsElement.element.querySelector('.films-list')
-// const filmsContainerElement = filmsElement.element.querySelector('.films-list__container')
+// РЕНДЕР ВНУТРЕННИХ КОМПОНЕНТОВ
 
-render(bodyElement, new SiteFooterView(films.length), RenderPosition.BEFOREEND)
+const menuComponent = new SiteMenuView(films)
+const sortComponent = new SiteSortFiltersView()
+render(mainComponent, menuComponent, RenderPosition.BEFOREEND)
+render(mainComponent, sortComponent, RenderPosition.BEFOREEND)
 
-// // Описываем работу кнопки Show More
-// let showMoreButton = new SiteShowMoreView()
+const filmsWrapperComponent = new SiteFilmsListView(films.length)
+render(mainComponent, filmsWrapperComponent, RenderPosition.BEFOREEND)
 
-// const initShowMoreEvents = (films) => {
+const filmsListContainerElement = filmsWrapperComponent.element.querySelector('.films-list__container')
 
-//     if (showMoreButton.element === true) {
-//         showMoreButton.removeElement()
-//         showMoreButton = new SiteShowMoreView()
-//     }
+// РЕНДЕР ОДНОЙ КАРТОЧКИ
 
-//     render(filmsListElement, showMoreButton, RenderPosition.BEFOREEND)
+const renderFilmCard = (filmCard) => {
+    const filmCardComponent = new SiteFilmCardView(filmCard)
+    render(filmsListContainerElement, filmCardComponent, RenderPosition.BEFOREEND)
 
-//     const FILMS_CARD_COUNT_PER_STEP = 5
+    filmCardComponent.setEditClickHandler(() => {
 
-//     if (films.length > FILMS_CARD_COUNT_PER_STEP) {
-//         showMoreButton.setClickHandler(() => {
-//             startFilmsCardCount = Math.min(startFilmsCardCount + FILMS_CARD_COUNT_PER_STEP, films.length)
+        let filmPopupComponent = new SiteFilmPopupView(filmCard)
 
-//             if (startFilmsCardCount >= films.length) {
-//                 showMoreButton.removeElement()
-//             }
+        if (filmPopupComponent !== null && document.body.lastChild.classList.contains('film-details')) {
+            document.body.querySelector('.film-details').remove()
+        }
 
-//             renderFilmCards(startFilmsCardCount, films)
+        render(document.body, filmPopupComponent, RenderPosition.BEFOREEND)
+        document.body.classList.add('hide-overflow')
 
-//         })
-//     }
-// }
+        filmPopupComponent.setCloseClickHandler(() => {
+            filmPopupComponent.removeElement()
+            document.body.classList.remove('hide-overflow')
+        })
 
-// // Отрисовываем карточки
+        document.addEventListener('keydown', (evt) => {
+            if (evt.key === 'Esc' || evt.key === 'Escape') {
+                filmPopupComponent.removeElement()
+                document.body.classList.remove('hide-overflow')
+            }
+        })
+    })
+}
 
-// const renderFilmCards = (counts, films) => {
-//     filmsContainerElement.innerHTML = ''
+//  РЕНДЕР НЕСКОЛЬКИХ КАРТОЧЕК
 
-//     for (let i = 0; i < counts; i++) {
-//         const filmCard = new SiteFilmCardView(films[i])
-//         filmCard.setEditClickHandler(() => {
+const renderFilmCards = (counts, films) => {
+    filmsListContainerElement.innerHTML = ''
+    for (let i = 0; i < counts; i++) {
+        renderFilmCard(films[i])
+    }
+}
 
-//           const closePopup = (popup) => {
-//               popup.removeElement()
-//               bodyElement.classList.remove('hide-overflow')
-//           }
+// ОПИСЫВАЕМ РАБОТУ КНОПКИ ПОКАЗАТЬ БОЛЬШЕ
 
-//           let filmPopup = new SiteFilmPopupView(films[i])
+const initShowMoreEvents = (films) => {
 
-//           if (filmPopup !== null && bodyElement.lastChild.classList.contains('film-details')) {
-//               bodyElement.querySelector('.film-details').remove()
-//           }
+    if (filmsWrapperComponent.element.querySelector('.films-list__show-more') === null) {
+        filmsWrapperComponent.renderShowMoreElement()
+    }
 
-//           render(bodyElement, filmPopup, RenderPosition.BEFOREEND)
-//           bodyElement.classList.add('hide-overflow')
+    filmsWrapperComponent.setShowMoreClickHandler(() => {
+        if (films.length > FILMS_CARD_COUNT_PER_STEP) {
+            startFilmCardsCount = Math.min(startFilmCardsCount + FILMS_CARD_COUNT_PER_STEP, films.length)
+    
+            if (startFilmCardsCount === films.length) {
+                filmsWrapperComponent.removeShowMoreElement()
+            }
+    
+            renderFilmCards(startFilmCardsCount, films)
+        }
+    })
+}
 
-//           filmPopup.setCloseClickHandler(() => {
-//             closePopup(filmPopup)
-//           })
+// УСЛОВИЕ НА НАЛИЧИЕ КАРТОЧЕК
 
-//           document.addEventListener('keydown', (evt) => {
-//               if (evt.key === 'Esc' || evt.key === 'Escape') {
-//                   closePopup(filmPopup)
-//               }
-//           })
-//       })
+if (ALL_FILMS_COUNT !== 0) {
+    renderFilmCards(startFilmCardsCount, films)
+    initShowMoreEvents(films)
+}
 
-//         render(filmsContainerElement, filmCard, RenderPosition.BEFOREEND)
-//     }
-// }
+//  ОПИСЫВАЕМ РАБОТУ ФИЛЬТРОВ В МЕНЮ
 
-// if (ALL_FILMS_COUNT !== 0) {
-//     renderFilmCards(startFilmsCardCount, films)
-//     initShowMoreEvents(films)
-// }
+menuComponent.setEditClickHandler((activeFilter) => {
+    const filterFilms = (activeFilter) => {
+        let filteredFilms = films.filter((film) => {
+            if (film[activeFilter]) return film
+        })
+        return filteredFilms
+    }
 
+    startFilmCardsCount = 5
 
-// // Описываем работу верхних фильтров
-
-// siteMenu.setEditClickHandler((activeFilter) => {
-//     const filterFilms = (activeFilter) => {
-//         let filteredFilms = films.filter((film) => {
-//             if (film[activeFilter]) return film
-//         })
-//         return filteredFilms
-//     }
-
-//     startFilmsCardCount = 5
-
-//     if (activeFilter === 'all-films') {
-//         renderFilmCards(startFilmsCardCount, films)
-//         initShowMoreEvents(films)
-//     } else {
-//         renderFilmCards(startFilmsCardCount, filterFilms(activeFilter))
-//         initShowMoreEvents(filterFilms(activeFilter))
-//     }
-// })
-
-// ПОДКЛЮЧИМ ПРЕЗЕНТЕР
-
-const filmsListPresenter = new FilmsListPresenter(mainElement)
-filmsListPresenter.init(films)
+    if (activeFilter === 'all-films') {
+        renderFilmCards(startFilmCardsCount, films)
+        initShowMoreEvents(films)
+    } else {
+        renderFilmCards(startFilmCardsCount, filterFilms(activeFilter))
+        initShowMoreEvents(filterFilms(activeFilter))
+    }
+})
