@@ -19,9 +19,6 @@ render(document.body, headerComponent, RenderPosition.BEFOREEND)
 render(document.body, mainComponent, RenderPosition.BEFOREEND)
 render(document.body, footerComponent, RenderPosition.BEFOREEND)
 
-// const sortComponent = new SiteSortFiltersView()
-// render(mainComponent, sortComponent, RenderPosition.BEFOREEND)
-
 // ИНИЦИАЛИЗИРУЕМ ПРЕЗЕРТЕР
 
 const filmsListPresenter = new FilmsListPresenter(mainComponent.element)

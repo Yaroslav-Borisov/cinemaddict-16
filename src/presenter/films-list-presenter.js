@@ -1,12 +1,10 @@
-import { RenderPosition, render } from '../utils.js'
-import SiteFilmCardView from '../view/site-film-card-view.js'
-import SiteFilmPopupView from '../view/site-film-popup-view.js'
+import { RenderPosition, render, updateItem } from '../utils.js'
 import SiteFilmsListView from '../view/site-films-list-view.js'
 import SiteMenuView from '../view/site-menu-view.js'
 import SiteSortFiltersView from '../view/site-sort-filters-view.js'
+import FilmPresenter from './film-presenter.js'
 
 export default class FilmsListPresenter {
-
     #filmsListContainer = null
     #menuComponent = null
     #sortComponent = new SiteSortFiltersView()
@@ -16,6 +14,7 @@ export default class FilmsListPresenter {
     #FILMS_CARD_COUNT_PER_STEP = null
 
     #films = []
+    #filmPresenter = new Map()
 
     #activeMenuFilter = 'all-films'
     #activeSortFilter = 'default'
@@ -50,10 +49,10 @@ export default class FilmsListPresenter {
         this.#startFilmCardsCount = 5
         this.#FILMS_CARD_COUNT_PER_STEP = 5
         this.#filmsWrapperComponent = new SiteFilmsListView(this.#films.length)
-        this.#menuComponent = new SiteMenuView(this.#films)
 
-        render(this.#filmsListContainer, this.#sortComponent, RenderPosition.BEFOREEND)
-        render(this.#filmsListContainer, this.#menuComponent, RenderPosition.AFTERBEGIN)
+        this.#renderMenuFilters()
+        this.#renderSortFilters()
+
         render(this.#filmsListContainer, this.#filmsWrapperComponent, RenderPosition.BEFOREEND)
 
         this.#renderFilmList()
@@ -61,34 +60,35 @@ export default class FilmsListPresenter {
         this.#initSortFiltersEvents()
     }
 
-    #renderFilmCard = (filmCard) => {
-        const filmsListContainerElement = this.#filmsWrapperComponent.element.querySelector('.films-list__container')
-        const filmCardComponent = new SiteFilmCardView(filmCard)
-        render(filmsListContainerElement, filmCardComponent, RenderPosition.BEFOREEND)
+    #renderMenuFilters = () => {
+        if (this.#menuComponent !== null) {
+            this.#menuComponent.removeElement()
+        }
 
-        filmCardComponent.setEditClickHandler(() => {
+        this.#menuComponent = new SiteMenuView(this.#films)
+        render(this.#filmsListContainer, this.#menuComponent, RenderPosition.AFTERBEGIN)
+    }
 
-            let filmPopupComponent = new SiteFilmPopupView(filmCard)
+    #renderFilmCard = (film) => {
+        const filmPresenter = new FilmPresenter(this.#filmsWrapperComponent, this.#handleFilmChange, this.#handleModeChange)
+        filmPresenter.init(film)
+        this.#filmPresenter.set(film.id, filmPresenter)
+    }
 
-            if (filmPopupComponent !== null && document.body.lastChild.classList.contains('film-details')) {
-                document.body.querySelector('.film-details').remove()
-            }
+    #handleFilmChange = (updatedFilm) => {
+        this.#films = updateItem(this.#films, updatedFilm)
+        this.#filmPresenter.get(updatedFilm.id).init(updatedFilm)
+    }
 
-            render(document.body, filmPopupComponent, RenderPosition.BEFOREEND)
-            document.body.classList.add('hide-overflow')
+    #handleModeChange = () => {
+        this.#filmPresenter.forEach((presenter) => presenter.resetView())
+    }
 
-            filmPopupComponent.setCloseClickHandler(() => {
-                filmPopupComponent.removeElement()
-                document.body.classList.remove('hide-overflow')
-            })
-
-            document.addEventListener('keydown', (evt) => {
-                if (evt.key === 'Esc' || evt.key === 'Escape') {
-                    filmPopupComponent.removeElement()
-                    document.body.classList.remove('hide-overflow')
-                }
-            })
-        })
+    #clearFilmList = () => {
+        this.#filmPresenter.forEach((presenter) => presenter.destroy())
+        this.#filmPresenter.clear()
+        this.#startFilmCardsCount = 5
+        this.#filmsWrapperComponent.removeShowMoreElement()
     }
 
     #renderFilmCards = (counts, films) => {
@@ -98,6 +98,7 @@ export default class FilmsListPresenter {
             this.#renderFilmCard(films[i])
         }
     }
+
 
     #renderFilmList = () => {
         if (this.filteredFilms.length !== 0) {
@@ -136,9 +137,14 @@ export default class FilmsListPresenter {
         })
     }
 
+    #renderSortFilters = () => {
+        render(this.#filmsListContainer, this.#sortComponent, RenderPosition.BEFOREEND)
+    }
+
     #initSortFiltersEvents = () => {
         this.#sortComponent.setEditClickHandler((activeSortFilter) => {
             this.#activeSortFilter = activeSortFilter
+            this.#clearFilmList()
             this.#renderFilmList()
         })
     }
