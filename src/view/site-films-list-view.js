@@ -45,4 +45,8 @@ export default class SiteFilmsListView extends AbstractView {
         const filmsList = this.element.querySelector('.films-list')
         filmsList.insertAdjacentHTML('beforeend', `<button class="films-list__show-more">Show more</button>`)
     }
+
+    getfilmsListContainerElement = () => {
+        return this.element.querySelector('.films-list__container')
+    }
 }

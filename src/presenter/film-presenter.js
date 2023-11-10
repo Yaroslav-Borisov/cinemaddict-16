@@ -1,11 +1,7 @@
-import { RenderPosition, render, replace } from '../utils.js'
+import { Keys, Mode, RenderPosition } from '../consts.js'
+import { render, replace } from '../utils.js'
 import SiteFilmCardView from '../view/site-film-card-view.js'
 import SiteFilmPopupView from '../view/site-film-popup-view.js'
-
-const Mode = {
-    DEFAULT: 'DEFAULT',
-    POPUP: 'POPUP'
-}
 export default class FilmPresenter {
     #filmsWrapperComponent = null
     #filmCardComponent = null
@@ -16,8 +12,6 @@ export default class FilmPresenter {
 
     #changeData = null
     #changeMode = null
-
-    #renderMenuFilters = null
 
     constructor (filmsWrapperComponent, changeData, changeMode) {
         this.#filmsWrapperComponent = filmsWrapperComponent
@@ -43,7 +37,7 @@ export default class FilmPresenter {
     }
 
     #renderFilm = () => {
-        const filmsListContainerElement = this.#filmsWrapperComponent.element.querySelector('.films-list__container')
+        const filmsListContainerElement = this.#filmsWrapperComponent.getfilmsListContainerElement()
 
         const prevFilmCardComponent = this.#filmCardComponent
         const prevFilmPopupComponent = this.#filmPopupComponent
@@ -92,7 +86,7 @@ export default class FilmPresenter {
     }
 
     #onEscKeyDown = (evt) => {
-        if (evt.key === 'Escape' || evt.key === 'Esc') {
+        if (evt.key === Keys.ESCAPE || evt.key === Keys.ESC) {
             evt.preventDefault()
             this.#closePopup()
         }
@@ -110,16 +104,13 @@ export default class FilmPresenter {
 
     #handleWatchListClick = () => {
         this.#changeData({ ...this.#film, isWatchlist: !this.#film.isWatchlist })
-        // this.#renderMenuFilters()
     }
 
     #handleWatchedClick = () => {
         this.#changeData({ ...this.#film, isWatched: !this.#film.isWatched })
-        // this.#renderMenuFilters()
     }
 
     #handleFavoriteClick = () => {
         this.#changeData({ ...this.#film, isFavorite: !this.#film.isFavorite })
-        // this.#renderMenuFilters()
     }
 }

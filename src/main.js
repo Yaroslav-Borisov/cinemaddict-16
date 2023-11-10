@@ -1,10 +1,10 @@
 import { generateFilm } from './mock/film.js'
-import { RenderPosition, render } from './utils.js'
-import SiteSortFiltersView from './view/site-sort-filters-view.js'
+import { render } from './utils.js'
 import SiteFooterView from './view/site-footer-view.js'
 import SiteHeaderView from './view/site-header-view.js'
 import SiteMainView from './view/site-main-view.js'
 import FilmsListPresenter from './presenter/films-list-presenter.js'
+import { RenderPosition } from './consts.js'
 
 const ALL_FILMS_COUNT = 22
 const films = Array.from({ length: ALL_FILMS_COUNT }, generateFilm)

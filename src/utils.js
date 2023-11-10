@@ -1,9 +1,5 @@
-import AbstractView from "./view/abstract-view"
-
-const Keys = {
-    ESC: 'Esc',
-    ESCAPE: 'Escape',
-}
+import { RenderPosition } from './consts.js'
+import AbstractView from "./view/abstract-view.js"
 
 export const getRandomInt = (start, end) => {
     if (start > end) {
@@ -19,13 +15,6 @@ export const getRandomBoolean = () => {
 
 export const getRandomElementArr = (arr) => {
     return arr[getRandomInt(0, arr.length - 1)]
-}
-
-export const RenderPosition = {
-    AFTEREND: 'afterend',
-    AFTERBEGIN: 'afterbegin',
-    BEFOREEND: 'beforeend',
-    BEFOREBEGIN: 'beforebegin'
 }
 
 export const render = (container, element, position) => {
