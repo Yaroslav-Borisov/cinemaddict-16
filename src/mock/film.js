@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import { getRandomBoolean, getRandomElementArr, getRandomInt } from '../utils.js'
+import { nanoid } from 'nanoid'
 
 const FILM_POSTERS = [
     'made-for-each-other.png',
@@ -88,6 +89,7 @@ export const generateFilm = () => {
     const [filmTitle, filmOriginalTitle] = filmTitleElement
 
     return {
+        id: nanoid(),
         isWatchlist: getRandomBoolean(),
         isWatched: getRandomBoolean(),
         isFavorite: getRandomBoolean(),
