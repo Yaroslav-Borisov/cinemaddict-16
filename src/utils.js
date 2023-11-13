@@ -1,5 +1,6 @@
 import { RenderPosition } from './consts.js'
 import AbstractView from "./view/abstract-view.js"
+import dayjs from 'dayjs'
 
 export const getRandomInt = (start, end) => {
     if (start > end) {
@@ -16,6 +17,30 @@ export const getRandomBoolean = () => {
 export const getRandomElementArr = (arr) => {
     return arr[getRandomInt(0, arr.length - 1)]
 }
+
+export const getRandomPastDate = (maxYearsGap = 0, maxDaysGap = 0) => {
+    const yearsGap = getRandomInt(0, maxYearsGap)
+    const daysGap = getRandomInt(0, maxDaysGap)
+    const minutesGap = getRandomInt(0, 1000)
+
+    return dayjs().subtract(yearsGap, 'year').subtract(daysGap, 'day').subtract(minutesGap, 'minutes').format()
+}
+
+export const formatCommentDate = (commentDate) => {
+    const date1 = dayjs();
+    const date2 = dayjs(commentDate);
+    const diffDayCount = date1.diff(date2, 'day');
+
+    if (diffDayCount === 0) {
+        return 'Today';
+    }
+
+    if (diffDayCount >= 1 && diffDayCount <= 3) {
+        return `${diffDayCount} days ago`;
+    }
+
+    return dayjs(commentDate).format('YYYY/MM/DD HH:mm');
+};
 
 export const render = (container, element, position) => {
     const parent = container instanceof AbstractView ? container.element : container

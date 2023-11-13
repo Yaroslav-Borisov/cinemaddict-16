@@ -1,14 +1,36 @@
+import { formatCommentDate } from '../utils.js'
 import AbstractView from './abstract-view.js'
 
 const createFilmPopupTemplate = (filmCard) => {
-    const { title, rating, ageRating, originalTitle, director, screenwriters, cast, releaseYear, duration, country, genres, image, description, commentsNumber, isWatchlist, isWatched, isFavorite } = filmCard
+  const { title, rating, ageRating, originalTitle, director, screenwriters, cast, releaseYear, duration, country, genres, image, description, commentsNumber, isWatchlist, isWatched, isFavorite, comments } = filmCard
 
-    const renderFilmGenres = (genres) => {
-        const genresHtml = genres.map((genre) => `<span class="film-details__genre">${genre}</span>`)
-        return genresHtml.join('\n')
-    }
+  const renderFilmGenres = (genres) => {
+    const genresHtml = genres.map((genre) => `<span class="film-details__genre">${genre}</span>`)
+    return genresHtml.join('\n')
+  }
 
-    return `<section class="film-details">
+  const renderFilmPopupComments = (comments = []) => comments
+    .slice()
+    .map((commentItem) => {
+      const { emotion, comment, author, date } = commentItem;
+      const humanizedCommentDate = formatCommentDate(date);
+
+      return `<li class="film-details__comment">
+      <span class="film-details__comment-emoji">
+        <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
+      </span>
+      <div>
+        <p class="film-details__comment-text">${comment}</p>
+        <p class="film-details__comment-info">
+          <span class="film-details__comment-author">${author}</span>
+          <span class="film-details__comment-day">${humanizedCommentDate}</span>
+          <button class="film-details__comment-delete">Delete</button>
+        </p>
+      </div>
+    </li>`;
+    }).join('\n');
+
+  return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
       <div class="film-details__top-container">
         <div class="film-details__close">
@@ -91,7 +113,9 @@ const createFilmPopupTemplate = (filmCard) => {
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsNumber}</span></h3>
 
 
-          <ul class="film-details__comments-list"></ul>
+          <ul class="film-details__comments-list">
+            ${renderFilmPopupComments(comments)}
+          </ul>
 
 
           <div class="film-details__new-comment">
@@ -137,55 +161,55 @@ const createFilmPopupTemplate = (filmCard) => {
 }
 
 export default class SiteFilmPopupView extends AbstractView {
-    #film = null
-    _callback = {}
+  #film = null
+  _callback = {}
 
-    constructor(film) {
-        super()
-        this.#film = film
-    }
+  constructor(film) {
+    super()
+    this.#film = film
+  }
 
-    get template() {
-        return createFilmPopupTemplate(this.#film)
-    }
+  get template() {
+    return createFilmPopupTemplate(this.#film)
+  }
 
-    setCloseClickHandler = (callback) => {
-        this._callback.closeClick = callback
-        this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#closeClickHandler)
-    }
+  setCloseClickHandler = (callback) => {
+    this._callback.closeClick = callback
+    this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#closeClickHandler)
+  }
 
-    setWatchListClickHandler = (callback) => {
-        this._callback.watchListClick = callback
-        this.element.querySelector('.film-details__control-button--watchlist').addEventListener('click', this.#watchListClickHandler)
-    }
+  setWatchListClickHandler = (callback) => {
+    this._callback.watchListClick = callback
+    this.element.querySelector('.film-details__control-button--watchlist').addEventListener('click', this.#watchListClickHandler)
+  }
 
-    setWatchedClickHandler = (callback) => {
-        this._callback.watchedClick = callback
-        this.element.querySelector('.film-details__control-button--watched').addEventListener('click', this.#watchedClickHandler)
-    }
+  setWatchedClickHandler = (callback) => {
+    this._callback.watchedClick = callback
+    this.element.querySelector('.film-details__control-button--watched').addEventListener('click', this.#watchedClickHandler)
+  }
 
-    setFavoriteClickHandler = (callback) => {
-        this._callback.favoriteClick = callback
-        this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#favoriteClickHandler)
-    }
+  setFavoriteClickHandler = (callback) => {
+    this._callback.favoriteClick = callback
+    this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#favoriteClickHandler)
+  }
 
-    #closeClickHandler = (evt) => {
-        evt.preventDefault()
-        this._callback.closeClick()
-    }
+  #closeClickHandler = (evt) => {
+    evt.preventDefault()
+    this._callback.closeClick()
+  }
 
-    #watchListClickHandler = (evt) => {
-        evt.preventDefault()
-        this._callback.watchListClick()
-    }
+  #watchListClickHandler = (evt) => {
+    evt.preventDefault()
+    this._callback.watchListClick()
+  }
 
-    #watchedClickHandler = (evt) => {
-        evt.preventDefault()
-        this._callback.watchedClick()
-    }
+  #watchedClickHandler = (evt) => {
+    evt.preventDefault()
+    this._callback.watchedClick()
+  }
 
-    #favoriteClickHandler = (evt) => {
-        evt.preventDefault()
-        this._callback.favoriteClick()
-    }
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault()
+    this._callback.favoriteClick()
+  }
 }
