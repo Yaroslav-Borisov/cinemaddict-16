@@ -13,6 +13,8 @@ export default class FilmPresenter {
     #changeData = null
     #changeMode = null
 
+    #comment = {}
+
     constructor (filmsWrapperComponent, changeData, changeMode) {
         this.#filmsWrapperComponent = filmsWrapperComponent
         this.#changeData = changeData
@@ -70,6 +72,7 @@ export default class FilmPresenter {
         this.#filmPopupComponent.setWatchedClickHandler(this.#handleWatchedClick)
         this.#filmPopupComponent.setFavoriteClickHandler(this.#handleFavoriteClick)
         this.#filmPopupComponent.setCloseClickHandler(this.#handleCloseClick)
+
         this.#filmPopupComponent.setEmojiChangeHandler(this.#handleEmojiChange)
     }
 

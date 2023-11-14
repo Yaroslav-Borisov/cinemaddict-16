@@ -139,6 +139,5 @@ export const generateFilm = () => {
         ageRating: `${getRandomInt(6, 21)}+`,
         commentsNumber: commentsNumber,
         comments: comments,
-        commentEmoji: null,
     }
 }
