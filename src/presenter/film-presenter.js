@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid'
+import dayjs from 'dayjs'
 import { Keys, Mode, RenderPosition } from '../consts.js'
 import { generateComment } from '../mock/film.js'
 import { render, replace } from '../utils.js'
@@ -125,7 +126,7 @@ export default class FilmPresenter {
     }
 
     #handleAddComment = ({text: comment, emoji: emotion}) => {
-      const newComment = {id: nanoid(), comment, emotion, author: 'Вы', date: new Date().toLocaleDateString()}
+      const newComment = {id: nanoid(), comment, emotion, author: 'Вы', date: new Date()}
       const comments = this.#film.comments.slice()
       comments.push(newComment)
       console.log(comments)
