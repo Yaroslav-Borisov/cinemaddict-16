@@ -105,6 +105,7 @@ const generateComment = () => {
     const date = getRandomPastDate(0, 10)
 
     return {
+        id: nanoid(),
         emotion,
         comment,
         author,

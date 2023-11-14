@@ -1,8 +1,9 @@
 import { formatCommentDate } from '../utils.js'
 import AbstractView from './abstract-view.js'
+import SmartView from './smart-view.js'
 
 const createFilmPopupTemplate = (filmCard) => {
-  const { title, rating, ageRating, originalTitle, director, screenwriters, cast, releaseYear, duration, country, genres, image, description, commentsNumber, isWatchlist, isWatched, isFavorite, comments, commentEmoji } = filmCard
+  const { title, rating, ageRating, originalTitle, director, screenwriters, cast, releaseYear, duration, country, genres, image, description, commentsNumber, isWatchlist, isWatched, isFavorite, comments, commentEmoji, commentText } = filmCard
 
   const renderFilmGenres = (genres) => {
     const genresHtml = genres.map((genre) => `<span class="film-details__genre">${genre}</span>`)
@@ -125,7 +126,7 @@ const createFilmPopupTemplate = (filmCard) => {
 
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">Great movie!</textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${commentText}</textarea>
             </label>
 
 
@@ -160,17 +161,17 @@ const createFilmPopupTemplate = (filmCard) => {
   </section>`
 }
 
-export default class SiteFilmPopupView extends AbstractView {
-  #film = null
+export default class SiteFilmPopupView extends SmartView {
   _callback = {}
 
   constructor(film) {
     super()
-    this.#film = film
+
+    this._data = ({...film, commentEmoji: null, commentText: ''})
   }
 
   get template() {
-    return createFilmPopupTemplate(this.#film)
+    return createFilmPopupTemplate(this._data)
   }
 
   setCloseClickHandler = (callback) => {
@@ -193,13 +194,28 @@ export default class SiteFilmPopupView extends AbstractView {
     this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#favoriteClickHandler)
   }
 
-  setEmojiChangeHandler = (callback) => {
-    this._callback.emojiChange = callback
-    this.element.querySelectorAll('.film-details__emoji-label').forEach((emoji) => {
-      emoji.addEventListener('click', () => {
-        this.#emojiChangeHandler
-        console.log(emoji.getAttribute('data-emoji'))
-      })
+  setEmojiChangeHandler = () => {
+    this.element.querySelectorAll('.film-details__emoji-label').forEach((emojiEl) => {
+      const emoji = emojiEl.getAttribute('data-emoji')
+      emojiEl.addEventListener('click', () => this.#emojiChangeHandler(emoji))
+    })
+  }
+
+  setTextChangeHandler = () => {
+    this.element.querySelector('.film-details__comment-input').addEventListener('input', this.#textChangeHandler)
+  }
+
+  setCommentAddHandler = (callback) => {
+    this._callback.addComment = callback
+    this.element.querySelector('.film-details__comment-input').addEventListener('keydown', (evt) => {
+      if (evt.code === 'Enter') {
+        const comment = {
+          text: this._data.commentText,
+          emoji: this._data.commentEmoji
+        }
+
+        this._callback.addComment(comment)
+      }
     })
   }
 
@@ -223,8 +239,22 @@ export default class SiteFilmPopupView extends AbstractView {
     this._callback.favoriteClick()
   }
 
-  #emojiChangeHandler = (evt) => {
-    evt.preventDefault()
-    this._callback.emojiChange()
+  #emojiChangeHandler = (emoji) => {
+    this.updateData({commentEmoji: emoji})
+  }
+
+  #textChangeHandler = (evt) => {
+    const text = evt.target.value
+    this.updateData({commentText: text}, true)
+  }
+
+  restoreHandlers() {
+    this.setCloseClickHandler(this._callback.closeClick);
+    this.setFavoriteClickHandler(this._callback.favoriteClick);
+    this.setWatchListClickHandler(this._callback.watchedClick);
+    this.setWatchListClickHandler(this._callback.watchListClick);
+    this.setEmojiChangeHandler()
+    this.setTextChangeHandler()
+    this.setCommentAddHandler(this._callback.addComment);
   }
 }
