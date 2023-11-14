@@ -2,7 +2,7 @@ import { formatCommentDate } from '../utils.js'
 import AbstractView from './abstract-view.js'
 
 const createFilmPopupTemplate = (filmCard) => {
-  const { title, rating, ageRating, originalTitle, director, screenwriters, cast, releaseYear, duration, country, genres, image, description, commentsNumber, isWatchlist, isWatched, isFavorite, comments } = filmCard
+  const { title, rating, ageRating, originalTitle, director, screenwriters, cast, releaseYear, duration, country, genres, image, description, commentsNumber, isWatchlist, isWatched, isFavorite, comments, commentEmoji } = filmCard
 
   const renderFilmGenres = (genres) => {
     const genresHtml = genres.map((genre) => `<span class="film-details__genre">${genre}</span>`)
@@ -120,7 +120,7 @@ const createFilmPopupTemplate = (filmCard) => {
 
           <div class="film-details__new-comment">
             <div class="film-details__add-emoji-label">
-              <img src="images/emoji/smile.png" width="55" height="55" alt="emoji-smile">
+              ${commentEmoji === null ? '' : `<img src="images/emoji/${commentEmoji}.png" width="55" height="55" alt="emoji-${commentEmoji}">`}
             </div>
 
 
@@ -131,25 +131,25 @@ const createFilmPopupTemplate = (filmCard) => {
 
             <div class="film-details__emoji-list">
               <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile" checked>
-              <label class="film-details__emoji-label" for="emoji-smile">
+              <label class="film-details__emoji-label" for="emoji-smile" data-emoji="smile">
                 <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
               </label>
 
 
               <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
-              <label class="film-details__emoji-label" for="emoji-sleeping">
+              <label class="film-details__emoji-label" for="emoji-sleeping" data-emoji="sleeping">
                 <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
               </label>
 
 
               <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
-              <label class="film-details__emoji-label" for="emoji-puke">
+              <label class="film-details__emoji-label" for="emoji-puke" data-emoji="puke">
                 <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
               </label>
 
 
               <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
-              <label class="film-details__emoji-label" for="emoji-angry">
+              <label class="film-details__emoji-label" for="emoji-angry" data-emoji="angry">
                 <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
               </label>
             </div>
@@ -193,6 +193,16 @@ export default class SiteFilmPopupView extends AbstractView {
     this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#favoriteClickHandler)
   }
 
+  setEmojiChangeHandler = (callback) => {
+    this._callback.emojiChange = callback
+    this.element.querySelectorAll('.film-details__emoji-label').forEach((emoji) => {
+      emoji.addEventListener('click', () => {
+        this.#emojiChangeHandler
+        console.log(emoji.getAttribute('data-emoji'))
+      })
+    })
+  }
+
   #closeClickHandler = (evt) => {
     evt.preventDefault()
     this._callback.closeClick()
@@ -211,5 +221,10 @@ export default class SiteFilmPopupView extends AbstractView {
   #favoriteClickHandler = (evt) => {
     evt.preventDefault()
     this._callback.favoriteClick()
+  }
+
+  #emojiChangeHandler = (evt) => {
+    evt.preventDefault()
+    this._callback.emojiChange()
   }
 }

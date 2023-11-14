@@ -138,6 +138,7 @@ export const generateFilm = () => {
         country: generateCountriesList(FILM_COUNTRIES),
         ageRating: `${getRandomInt(6, 21)}+`,
         commentsNumber: commentsNumber,
-        comments: comments
+        comments: comments,
+        commentEmoji: null,
     }
 }

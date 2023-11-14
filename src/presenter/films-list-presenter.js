@@ -1,5 +1,8 @@
 import { MenuFilterName, RenderPosition, SortFilterName } from '../consts.js'
 import { remove, render, updateItem } from '../utils.js'
+import EmptyFavoriteView from '../view/empty-favorite-view.js'
+import EmptyWatchedView from '../view/empty-watched-view.js'
+import EmptyWatchlistView from '../view/empty-watchlist-view.js'
 import SiteFilmsListView from '../view/site-films-list-view.js'
 import SiteMenuView from '../view/site-menu-view.js'
 import SiteSortFiltersView from '../view/site-sort-filters-view.js'
@@ -9,6 +12,10 @@ export default class FilmsListPresenter {
     #filmsListContainer = null
     #menuComponent = null
     #sortComponent = new SiteSortFiltersView()
+
+    #emptyWatchlistComponent = new EmptyWatchlistView()
+    #emptyWatchedComponent = new EmptyWatchedView()
+    #emptyFavoriteComponent = new EmptyFavoriteView()
 
     #filmsWrapperComponent = null
     #startFilmCardsCount = null
@@ -35,7 +42,7 @@ export default class FilmsListPresenter {
             })
         }
 
-        switch(this.#activeSortFilter) {
+        switch (this.#activeSortFilter) {
             case SortFilterName.DATE:
                 filteredFilms = filteredFilms.slice().sort((a, b) => b.releaseYear - a.releaseYear)
                 break
@@ -45,7 +52,6 @@ export default class FilmsListPresenter {
             case SortFilterName.DEFAULT:
                 filteredFilms = filteredFilms
         }
-
         return filteredFilms
     }
 
@@ -69,7 +75,7 @@ export default class FilmsListPresenter {
             remove(this.#menuComponent)
         }
 
-        this.#menuComponent = new SiteMenuView(this.#films)
+        this.#menuComponent = new SiteMenuView(this.#films, this.#activeMenuFilter)
         render(this.#filmsListContainer, this.#menuComponent, RenderPosition.AFTERBEGIN)
     }
 
@@ -93,9 +99,6 @@ export default class FilmsListPresenter {
 
     #clearFilmList = () => {
         this.#filmPresenter.forEach((presenter) => presenter.destroy())
-        this.#filmPresenter.clear()
-        this.#startFilmCardsCount = 5
-        this.#filmsWrapperComponent.removeShowMoreElement()
     }
 
     #renderFilmCards = (counts, films) => {
@@ -108,11 +111,28 @@ export default class FilmsListPresenter {
 
     #renderFilmList = () => {
         if (this.filteredFilms.length !== 0) {
-            this.#startFilmCardsCount = 5
-            this.#renderFilmCards(this.#startFilmCardsCount, this.filteredFilms)
-            this.#initShowMoreEvents()
-        } else {
-            this.#filmsWrapperComponent.removeShowMoreElement()
+            if (this.filteredFilms.length < 5) {
+                this.#startFilmCardsCount = this.filteredFilms.length
+                this.#renderFilmCards(this.#startFilmCardsCount, this.filteredFilms)
+            } else {
+                this.#startFilmCardsCount = 5
+                this.#renderFilmCards(this.#startFilmCardsCount, this.filteredFilms)
+                this.#initShowMoreEvents()
+            }
+        } else if (this.filteredFilms.length === 0) {
+            this.#clearFilmList()
+
+            switch (this.#activeMenuFilter) {
+                case MenuFilterName.WATCHLIST:
+                    this.#renderEmptyWatchlist()
+                    break
+                case MenuFilterName.WATCHED:
+                    this.#renderEmptyWatched()
+                    break
+                case MenuFilterName.FAVORITE:
+                    this.#renderEmptyFavorite()
+                    break
+            }
         }
     }
 
@@ -136,6 +156,7 @@ export default class FilmsListPresenter {
 
     #initMenuFiltersEvents = () => {
         this.#menuComponent.setEditClickHandler((activeMenuFilter) => {
+            this.#clearFilmList()
             this.#resetSortFilters()
             this.#activeMenuFilter = activeMenuFilter
             this.#renderFilmList()
@@ -146,10 +167,39 @@ export default class FilmsListPresenter {
         render(this.#filmsListContainer, this.#sortComponent, RenderPosition.BEFOREEND)
     }
 
+    #renderEmptyWatchlist = () => {
+        if (this.#filmsWrapperComponent.element.querySelector('.films-list__show-more') !== null) {
+            this.#filmsWrapperComponent.removeShowMoreElement()
+        }
+
+        const filmsListContainerElement = this.#filmsWrapperComponent.getfilmsListContainerElement()
+        filmsListContainerElement.innerHTML = ''
+        render(filmsListContainerElement, this.#emptyWatchlistComponent, RenderPosition.BEFOREEND)
+    }
+
+    #renderEmptyWatched = () => {
+        if (this.#filmsWrapperComponent.element.querySelector('.films-list__show-more') !== null) {
+            this.#filmsWrapperComponent.removeShowMoreElement()
+        }
+
+        const filmsListContainerElement = this.#filmsWrapperComponent.getfilmsListContainerElement()
+        filmsListContainerElement.innerHTML = ''
+        render(filmsListContainerElement, this.#emptyWatchedComponent, RenderPosition.BEFOREEND)
+    }
+
+    #renderEmptyFavorite = () => {
+        if (this.#filmsWrapperComponent.element.querySelector('.films-list__show-more') !== null) {
+            this.#filmsWrapperComponent.removeShowMoreElement()
+        }
+
+        const filmsListContainerElement = this.#filmsWrapperComponent.getfilmsListContainerElement()
+        filmsListContainerElement.innerHTML = ''
+        render(filmsListContainerElement, this.#emptyFavoriteComponent, RenderPosition.BEFOREEND)
+    }
+
     #initSortFiltersEvents = () => {
         this.#sortComponent.setEditClickHandler((activeSortFilter) => {
             this.#activeSortFilter = activeSortFilter
-            this.#clearFilmList()
             this.#renderFilmList()
         })
     }

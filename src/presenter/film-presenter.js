@@ -70,6 +70,7 @@ export default class FilmPresenter {
         this.#filmPopupComponent.setWatchedClickHandler(this.#handleWatchedClick)
         this.#filmPopupComponent.setFavoriteClickHandler(this.#handleFavoriteClick)
         this.#filmPopupComponent.setCloseClickHandler(this.#handleCloseClick)
+        this.#filmPopupComponent.setEmojiChangeHandler(this.#handleEmojiChange)
     }
 
     #showPopup = () => {
@@ -112,5 +113,9 @@ export default class FilmPresenter {
 
     #handleFavoriteClick = () => {
         this.#changeData({ ...this.#film, isFavorite: !this.#film.isFavorite })
+    }
+
+    #handleEmojiChange = () => {
+        this.#changeData({ ...this.#film, commentEmoji: emojiChange})
     }
 }
