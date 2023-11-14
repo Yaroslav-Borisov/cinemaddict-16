@@ -1,4 +1,6 @@
+import { nanoid } from 'nanoid'
 import { Keys, Mode, RenderPosition } from '../consts.js'
+import { generateComment } from '../mock/film.js'
 import { render, replace } from '../utils.js'
 import SiteFilmCardView from '../view/site-film-card-view.js'
 import SiteFilmPopupView from '../view/site-film-popup-view.js'
@@ -12,8 +14,6 @@ export default class FilmPresenter {
 
     #changeData = null
     #changeMode = null
-
-    #comment = {}
 
     constructor (filmsWrapperComponent, changeData, changeMode) {
         this.#filmsWrapperComponent = filmsWrapperComponent
@@ -74,6 +74,8 @@ export default class FilmPresenter {
         this.#filmPopupComponent.setCloseClickHandler(this.#handleCloseClick)
 
         this.#filmPopupComponent.setEmojiChangeHandler(this.#handleEmojiChange)
+        this.#filmPopupComponent.setTextChangeHandler()
+        this.#filmPopupComponent.setCommentAddHandler(this.#handleAddComment)
     }
 
     #showPopup = () => {
@@ -120,5 +122,13 @@ export default class FilmPresenter {
 
     #handleEmojiChange = () => {
         this.#changeData({ ...this.#film, commentEmoji: emojiChange})
+    }
+
+    #handleAddComment = ({text: comment, emoji: emotion}) => {
+      const newComment = {id: nanoid(), comment, emotion, author: 'Вы', date: new Date().toLocaleDateString()}
+      const comments = this.#film.comments.slice()
+      comments.push(newComment)
+      console.log(comments)
+      this.#changeData({...this.#film, comments})
     }
 }
