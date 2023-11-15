@@ -1,8 +1,6 @@
 import { nanoid } from 'nanoid'
-import dayjs from 'dayjs'
-import { Keys, Mode, RenderPosition } from '../consts.js'
-import { generateComment } from '../mock/film.js'
-import { render, replace } from '../utils.js'
+import { Keys, Mode, RenderPosition } from '../utils/consts.js'
+import { render, replace } from '../utils/utils.js'
 import SiteFilmCardView from '../view/site-film-card-view.js'
 import SiteFilmPopupView from '../view/site-film-popup-view.js'
 export default class FilmPresenter {
@@ -129,7 +127,6 @@ export default class FilmPresenter {
       const newComment = {id: nanoid(), comment, emotion, author: 'Вы', date: new Date()}
       const comments = this.#film.comments.slice()
       comments.push(newComment)
-      console.log(comments)
       this.#changeData({...this.#film, comments})
     }
 }

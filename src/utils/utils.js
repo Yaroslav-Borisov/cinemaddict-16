@@ -1,5 +1,5 @@
 import { RenderPosition } from './consts.js'
-import AbstractView from "./view/abstract-view.js"
+import AbstractView from "../view/abstract-view.js"
 import dayjs from 'dayjs'
 
 export const getRandomInt = (start, end) => {
@@ -112,3 +112,4 @@ export const replace = (newElement, oldElement) => {
 
     parent.replaceChild(newChild, oldChild);
 };
+

@@ -1,6 +1,7 @@
-import { formatCommentDate } from '../utils.js'
+import { formatCommentDate } from '../utils/utils.js'
 import AbstractView from './abstract-view.js'
 import SmartView from './smart-view.js'
+import he from 'he'
 
 const createFilmPopupTemplate = (filmCard) => {
   const { title, rating, ageRating, originalTitle, director, screenwriters, cast, releaseYear, duration, country, genres, image, description, commentsNumber, isWatchlist, isWatched, isFavorite, comments, commentEmoji, commentText } = filmCard
@@ -126,7 +127,7 @@ const createFilmPopupTemplate = (filmCard) => {
 
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${commentText}</textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(commentText)}</textarea>
             </label>
 
 
@@ -167,7 +168,7 @@ export default class SiteFilmPopupView extends SmartView {
   constructor(film) {
     super()
 
-    this._data = ({...film, commentEmoji: null, commentText: ''})
+    this._data = ({ ...film, commentEmoji: null, commentText: '' })
   }
 
   get template() {
@@ -240,12 +241,12 @@ export default class SiteFilmPopupView extends SmartView {
   }
 
   #emojiChangeHandler = (emoji) => {
-    this.updateData({commentEmoji: emoji})
+    this.updateData({ commentEmoji: emoji })
   }
 
   #textChangeHandler = (evt) => {
     const text = evt.target.value
-    this.updateData({commentText: text}, true)
+    this.updateData({ commentText: text }, true)
   }
 
   restoreHandlers() {

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { getRandomBoolean, getRandomElementArr, getRandomInt, getRandomPastDate } from '../utils.js'
+import { getRandomBoolean, getRandomElementArr, getRandomInt, getRandomPastDate } from '../utils/utils.js'
 import { nanoid } from 'nanoid'
 
 const FILM_POSTERS = [

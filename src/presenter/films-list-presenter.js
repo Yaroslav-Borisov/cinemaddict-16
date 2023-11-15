@@ -1,5 +1,5 @@
-import { MenuFilterName, RenderPosition, SortFilterName } from '../consts.js'
-import { remove, render, updateItem } from '../utils.js'
+import { MenuFilterName, RenderPosition, SortFilterName } from '../utils/consts.js'
+import { remove, render, updateItem } from '../utils/utils.js'
 import EmptyFavoriteView from '../view/empty-favorite-view.js'
 import EmptyWatchedView from '../view/empty-watched-view.js'
 import EmptyWatchlistView from '../view/empty-watchlist-view.js'
@@ -10,6 +10,7 @@ import FilmPresenter from './film-presenter.js'
 
 export default class FilmsListPresenter {
     #filmsListContainer = null
+    #filmsModel = null
     #menuComponent = null
     #sortComponent = new SiteSortFiltersView()
 
@@ -21,23 +22,28 @@ export default class FilmsListPresenter {
     #startFilmCardsCount = null
     #FILMS_CARD_COUNT_PER_STEP = 5
 
-    #films = []
+    // #films = []
     #filmPresenter = new Map()
 
     #activeMenuFilter = MenuFilterName.DEFAULT
     #activeSortFilter = SortFilterName.DEFAULT
 
-    constructor(filmsListContainer) {
+    constructor(filmsListContainer, filmsModel) {
         this.#filmsListContainer = filmsListContainer
+        this.#filmsModel = filmsModel
+    }
+
+    get films() {
+        return this.#filmsModel.films
     }
 
     get filteredFilms() {
         let filteredFilms = []
 
         if (this.#activeMenuFilter === MenuFilterName.DEFAULT) {
-            filteredFilms = this.#films
+            filteredFilms = this.films
         } else {
-            filteredFilms = this.#films.filter((film) => {
+            filteredFilms = this.films.filter((film) => {
                 if (film[this.#activeMenuFilter]) return film
             })
         }
@@ -55,10 +61,9 @@ export default class FilmsListPresenter {
         return filteredFilms
     }
 
-    init = (films) => {
-        this.#films = [...films]
+    init = () => {
         this.#startFilmCardsCount = 5
-        this.#filmsWrapperComponent = new SiteFilmsListView(this.#films.length)
+        this.#filmsWrapperComponent = new SiteFilmsListView(this.films.length)
 
         this.#renderMenuFilters()
         this.#renderSortFilters()
@@ -75,7 +80,7 @@ export default class FilmsListPresenter {
             remove(this.#menuComponent)
         }
 
-        this.#menuComponent = new SiteMenuView(this.#films, this.#activeMenuFilter)
+        this.#menuComponent = new SiteMenuView(this.films, this.#activeMenuFilter)
         render(this.#filmsListContainer, this.#menuComponent, RenderPosition.AFTERBEGIN)
     }
 
@@ -86,7 +91,7 @@ export default class FilmsListPresenter {
     }
 
     #handleFilmChange = (updatedFilm) => {
-        this.#films = updateItem(this.#films, updatedFilm)
+        this.films = updateItem(this.films, updatedFilm)
         this.#filmPresenter.get(updatedFilm.id).init(updatedFilm)
         this.#renderMenuFilters()
         this.#initMenuFiltersEvents()
