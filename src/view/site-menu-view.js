@@ -1,6 +1,6 @@
 import AbstractView from './abstract-view.js'
 
-const createMenuTemplate = (films) => {
+const createMenuTemplate = (films, active) => {
 
     const navFilmsCount = {
         isWatchlist: 0,
@@ -20,28 +20,52 @@ const createMenuTemplate = (films) => {
         }
     })
 
-    return `<nav class="main-navigation">
+    return  `<nav class="main-navigation">
+                ${active === 'all-films' ? `
                 <div class="main-navigation__items">
                     <a href="#all" class="main-navigation__item main-navigation__item--active" data-name="all-films">All movies</a>
                     <a href="#watchlist" class="main-navigation__item" data-name="isWatchlist">Watchlist <span class="main-navigation__item-count">${navFilmsCount.isWatchlist}</span></a>
                     <a href="#history" class="main-navigation__item" data-name="isWatched">History <span class="main-navigation__item-count">${navFilmsCount.isWatched}</span></a>
                     <a href="#favorites" class="main-navigation__item" data-name="isFavorite">Favorites <span class="main-navigation__item-count">${navFilmsCount.isFavorite}</span></a>
-                </div>
+                </div> ` : ''}
+                ${active === 'isWatchlist' ? `
+                <div class="main-navigation__items">
+                    <a href="#all" class="main-navigation__item" data-name="all-films">All movies</a>
+                    <a href="#watchlist" class="main-navigation__item main-navigation__item--active" data-name="isWatchlist">Watchlist <span class="main-navigation__item-count">${navFilmsCount.isWatchlist}</span></a>
+                    <a href="#history" class="main-navigation__item" data-name="isWatched">History <span class="main-navigation__item-count">${navFilmsCount.isWatched}</span></a>
+                    <a href="#favorites" class="main-navigation__item" data-name="isFavorite">Favorites <span class="main-navigation__item-count">${navFilmsCount.isFavorite}</span></a>
+                </div> ` : ''}
+                ${active === 'isWatched' ? `
+                <div class="main-navigation__items">
+                    <a href="#all" class="main-navigation__item" data-name="all-films">All movies</a>
+                    <a href="#watchlist" class="main-navigation__item" data-name="isWatchlist">Watchlist <span class="main-navigation__item-count">${navFilmsCount.isWatchlist}</span></a>
+                    <a href="#history" class="main-navigation__item main-navigation__item--active" data-name="isWatched">History <span class="main-navigation__item-count">${navFilmsCount.isWatched}</span></a>
+                    <a href="#favorites" class="main-navigation__item" data-name="isFavorite">Favorites <span class="main-navigation__item-count">${navFilmsCount.isFavorite}</span></a>
+                </div> ` : ''}
+                ${active === 'isFavorite' ? `
+                <div class="main-navigation__items">
+                    <a href="#all" class="main-navigation__item" data-name="all-films">All movies</a>
+                    <a href="#watchlist" class="main-navigation__item" data-name="isWatchlist">Watchlist <span class="main-navigation__item-count">${navFilmsCount.isWatchlist}</span></a>
+                    <a href="#history" class="main-navigation__item" data-name="isWatched">History <span class="main-navigation__item-count">${navFilmsCount.isWatched}</span></a>
+                    <a href="#favorites" class="main-navigation__item main-navigation__item--active" data-name="isFavorite">Favorites <span class="main-navigation__item-count">${navFilmsCount.isFavorite}</span></a>
+                </div> ` : ''}
                 <a href="#stats" class="main-navigation__additional">Stats</a>
             </nav>`
 }
 
 export default class SiteMenuView extends AbstractView {
     #films = null
+    #active = null
     _callback = {}
 
-    constructor(films) {
+    constructor(films, active) {
         super()
         this.#films = films
+        this.#active = active
     }
-  
+
     get template() {
-        return createMenuTemplate(this.#films)
+        return createMenuTemplate(this.#films, this.#active)
     }
 
     setEditClickHandler = (callback) => {
@@ -51,19 +75,15 @@ export default class SiteMenuView extends AbstractView {
 
     #editClickHandler = (evt) => {
         evt.preventDefault()
-
         const menuFilters = this.element.querySelectorAll('.main-navigation__item')
         menuFilters.forEach((filter) => {
             filter.classList.remove('main-navigation__item--active')
         })
 
-        if (evt.target.classList.contains('main-navigation__item')) {
-            evt.target.classList.add('main-navigation__item--active')
-        }
-        
         const activeMenuFilter = evt.target.getAttribute('data-name')
+        evt.target.classList.add('main-navigation__item--active')
         if (activeMenuFilter) {
             this._callback.editClick?.(activeMenuFilter)
         }
     }
-  }
+}

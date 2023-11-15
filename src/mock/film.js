@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { getRandomBoolean, getRandomElementArr, getRandomInt } from '../utils.js'
+import { getRandomBoolean, getRandomElementArr, getRandomInt, getRandomPastDate } from '../utils.js'
 import { nanoid } from 'nanoid'
 
 const FILM_POSTERS = [
@@ -60,6 +60,21 @@ const FILM_COUNTRIES = [
     'Китай',
 ]
 
+const EMOTIONS = [
+    'smile',
+    'sleeping',
+    'puke',
+    'angry'
+]
+
+const COMMENT_TEXTS = [
+    'Интересный фильм и актёры',
+    'Скучнооооо',
+    'Фильм очень старый',
+    'Почти 2 часа... это того не стоит',
+    'Фильм крутой, рекомендую!'
+]
+
 const generateNamesList = (names) => {
     return names.sort(() => (Math.random() > .5) ? 1 : -1).slice(0, getRandomInt(1, getRandomInt(1, names.length))).join(', ')
 }
@@ -83,10 +98,27 @@ const generateDate = () => {
     return dayjs().add(maxYearGap, 'year').toDate().getFullYear()
 }
 
+const generateComment = () => {
+    const emotion = getRandomElementArr(EMOTIONS)
+    const comment = getRandomElementArr(COMMENT_TEXTS)
+    const author = getRandomElementArr(FILM_CAST_NAMES)
+    const date = getRandomPastDate(0, 10)
+
+    return {
+        id: nanoid(),
+        emotion,
+        comment,
+        author,
+        date
+    }
+}
+
 export const generateFilm = () => {
 
     const filmTitleElement = getRandomElementArr(FILM_TITLES)
     const [filmTitle, filmOriginalTitle] = filmTitleElement
+    const commentsNumber = getRandomInt(0, 5)
+    const comments = Array.from({ length: commentsNumber }, generateComment)
 
     return {
         id: nanoid(),
@@ -106,6 +138,7 @@ export const generateFilm = () => {
         description: generateDescription(),
         country: generateCountriesList(FILM_COUNTRIES),
         ageRating: `${getRandomInt(6, 21)}+`,
-        commentsNumber: getRandomInt(0, 5)
+        commentsNumber: commentsNumber,
+        comments: comments,
     }
 }
