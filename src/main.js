@@ -6,6 +6,7 @@ import FilmsListPresenter from './presenter/films-list-presenter.js'
 import { render } from './utils/utils.js'
 import { RenderPosition } from './utils/consts.js'
 import FilmsModel from './model/films-model.js'
+import SiteStatsView from './view/site-stats-view.js'
 
 const ALL_FILMS_COUNT = 22
 const films = Array.from({ length: ALL_FILMS_COUNT }, generateFilm)
@@ -15,7 +16,7 @@ filmsModel.films = films
 
 // РЕНДЕР ГЛАВНЫХ ВНЕШНИХ КОМПОНЕНТОВ
 
-const headerComponent = new SiteHeaderView()
+const headerComponent = new SiteHeaderView(films)
 const mainComponent = new SiteMainView()
 const footerComponent = new SiteFooterView(films.length)
 
@@ -27,6 +28,13 @@ render(document.body, footerComponent, RenderPosition.BEFOREEND)
 
 const filmsListPresenter = new FilmsListPresenter(mainComponent.element, filmsModel)
 filmsListPresenter.init()
+
+// export const statsComponent = new SiteStatsView()
+
+// const stats = document.querySelector('.main-navigation__additional')
+// stats.addEventListener('click', () => {
+//     render(mainComponent, statsComponent, RenderPosition.BEFOREEND)
+// })
 
 
 

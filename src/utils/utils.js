@@ -18,6 +18,20 @@ export const getRandomElementArr = (arr) => {
     return arr[getRandomInt(0, arr.length - 1)]
 }
 
+export const formatRuntime = (runtime, humanize) => {
+    const date = dayjs().startOf('day').minute(runtime)
+    const hours = Number(date.format('H'))
+    const minutes = Number(date.format('mm'))
+    const humanizedHours = (hours !== 0) ? `${hours}h` : ''
+    const humanizedMinutes = (minutes !== 0) ? `${minutes}m` : ''
+
+    if (humanize) {
+        return `${humanizedHours} ${humanizedMinutes}`.trim()
+    }
+
+    return { hours, minutes }
+}
+
 export const getRandomPastDate = (maxYearsGap = 0, maxDaysGap = 0) => {
     const yearsGap = getRandomInt(0, maxYearsGap)
     const daysGap = getRandomInt(0, maxDaysGap)
@@ -27,19 +41,19 @@ export const getRandomPastDate = (maxYearsGap = 0, maxDaysGap = 0) => {
 }
 
 export const formatCommentDate = (commentDate) => {
-    const date1 = dayjs();
-    const date2 = dayjs(commentDate);
-    const diffDayCount = date1.diff(date2, 'day');
+    const date1 = dayjs()
+    const date2 = dayjs(commentDate)
+    const diffDayCount = date1.diff(date2, 'day')
 
     if (diffDayCount === 0) {
-        return 'Today';
+        return 'Today'
     }
 
     if (diffDayCount >= 1 && diffDayCount <= 3) {
-        return `${diffDayCount} days ago`;
+        return `${diffDayCount} days ago`
     }
 
-    return dayjs(commentDate).format('YYYY/MM/DD HH:mm');
+    return dayjs(commentDate).format('YYYY/MM/DD HH:mm')
 };
 
 export const render = (container, element, position) => {
@@ -89,27 +103,65 @@ export const remove = (component) => {
     }
 
     if (!(component instanceof AbstractView)) {
-        throw new Error('Can remove only components');
+        throw new Error('Can remove only components')
     }
 
-    component.element.remove();
-    component.removeElement();
+    component.element.remove()
+    component.removeElement()
 };
 
 export const replace = (newElement, oldElement) => {
     if (newElement === null || oldElement === null) {
-        throw new Error('Can\'t replace unexisting elements');
+        throw new Error('Can\'t replace unexisting elements')
     }
 
-    const newChild = newElement instanceof AbstractView ? newElement.element : newElement;
-    const oldChild = oldElement instanceof AbstractView ? oldElement.element : oldElement;
+    const newChild = newElement instanceof AbstractView ? newElement.element : newElement
+    const oldChild = oldElement instanceof AbstractView ? oldElement.element : oldElement
 
-    const parent = oldChild.parentElement;
+    const parent = oldChild.parentElement
 
     if (parent === null) {
-        throw new Error('Parent element doesn\'t exist');
+        throw new Error('Parent element doesn\'t exist')
     }
 
-    parent.replaceChild(newChild, oldChild);
-};
+    parent.replaceChild(newChild, oldChild)
+}
+
+export const genresToCountMap = (films) => Object
+    .entries(films.reduce((acc, currentFilm) => {
+        currentFilm.genres.forEach((genre) => {
+            if (genre in acc) {
+                acc[genre] += 1
+            } else {
+                acc[genre] = 1
+            }
+        });
+
+        return acc
+    }, {}))
+    .sort(([, currentGenreRepeating], [, nextGenreRepeating]) => nextGenreRepeating - currentGenreRepeating)
+    .map(([genre, count]) => ({ genre, count }))
+
+export const getTopGenre = (films) => genresToCountMap(films)[0].genre
+
+export const getFilmsDuration = (films) => formatRuntime(films.reduce((total, currentFilm) => {
+    total += currentFilm.runtime
+    return total
+}, 0))
+
+export const watchedFilmCountToUserRank = (count) => {
+    let userRank = null
+
+    if (count >= 21) {
+        userRank = 'Movie Buff'
+    } else if (count >= 11 && count <= 20) {
+        userRank = 'Fan'
+    } else if (count >= 1 && count <= 10) {
+        userRank = 'Novice'
+    } else {
+        userRank = ''
+    }
+
+    return userRank
+}
 

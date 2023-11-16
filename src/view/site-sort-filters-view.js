@@ -44,4 +44,8 @@ export default class SiteSortFiltersView extends AbstractView {
         
         this.element.querySelector('[data-name = default]').classList.add('sort__button--active')
     }
+
+    remove = () => {
+        this.element.remove()
+    }
 }

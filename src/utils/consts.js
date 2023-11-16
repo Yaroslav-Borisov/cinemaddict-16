@@ -19,7 +19,8 @@ export const MenuFilterName = {
     DEFAULT: 'all-films',
     WATCHLIST: 'isWatchlist',
     WATCHED: 'isWatched',
-    FAVORITE: 'isFavorite'
+    FAVORITE: 'isFavorite',
+    STATS: 'stats',
 }
 
 export const SortFilterName = {
@@ -27,3 +28,11 @@ export const SortFilterName = {
     DATE: 'by-date',
     RATING: 'by-rating'
 }
+
+export const StatisticsFilterType = {
+    ALL_TIME: 'all-time',
+    TODAY: 'today',
+    WEEK: 'week',
+    MONTH: 'month',
+    YEAR: 'year'
+  }

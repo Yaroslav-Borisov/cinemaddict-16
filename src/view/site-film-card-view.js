@@ -3,6 +3,8 @@ import AbstractView from './abstract-view.js'
 const createFilmCardTemplate = (film) => {
 
     const { title, rating, releaseYear, duration, genres, image, description, commentsNumber, isWatchlist, isWatched, isFavorite } = film
+    const durationHours = Math.trunc(duration / 60)
+    const minutes = duration - 60 * durationHours
 
     return `<article class="film-card">
                 <a class="film-card__link">
@@ -10,7 +12,7 @@ const createFilmCardTemplate = (film) => {
                 <p class="film-card__rating">${rating}</p>
                 <p class="film-card__info">
                     <span class="film-card__year">${releaseYear}</span>
-                    <span class="film-card__duration">${duration}</span>
+                    <span class="film-card__duration">${durationHours}h ${minutes}m</span>
                     <span class="film-card__genre">${genres[0]}</span>
                 </p>
                 <img src="./images/posters/${image}" alt="" class="film-card__poster">

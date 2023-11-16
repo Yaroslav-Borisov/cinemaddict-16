@@ -49,4 +49,8 @@ export default class SiteFilmsListView extends AbstractView {
     getfilmsListContainerElement = () => {
         return this.element.querySelector('.films-list__container')
     }
+
+    removeElement = () => {
+        // this.element.remove()
+    }
 }

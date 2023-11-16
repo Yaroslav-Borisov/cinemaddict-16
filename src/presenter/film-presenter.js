@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid'
+import dayjs from 'dayjs';
 import { Keys, Mode, RenderPosition } from '../utils/consts.js'
 import { render, replace } from '../utils/utils.js'
 import SiteFilmCardView from '../view/site-film-card-view.js'
@@ -112,7 +113,7 @@ export default class FilmPresenter {
     }
 
     #handleWatchedClick = () => {
-        this.#changeData({ ...this.#film, isWatched: !this.#film.isWatched })
+        this.#changeData({ ...this.#film, isWatched: !this.#film.isWatched, watchingDate: dayjs().format() }, (this.#mode === Mode.POPUP) && this.#filmPopupComponent.state);
     }
 
     #handleFavoriteClick = () => {

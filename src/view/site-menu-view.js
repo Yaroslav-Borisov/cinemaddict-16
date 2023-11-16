@@ -27,29 +27,40 @@ const createMenuTemplate = (films, active) => {
                     <a href="#watchlist" class="main-navigation__item" data-name="isWatchlist">Watchlist <span class="main-navigation__item-count">${navFilmsCount.isWatchlist}</span></a>
                     <a href="#history" class="main-navigation__item" data-name="isWatched">History <span class="main-navigation__item-count">${navFilmsCount.isWatched}</span></a>
                     <a href="#favorites" class="main-navigation__item" data-name="isFavorite">Favorites <span class="main-navigation__item-count">${navFilmsCount.isFavorite}</span></a>
-                </div> ` : ''}
+                </div>
+                <a href="#stats" class="main-navigation__additional">Stats</a>` : ''}
                 ${active === 'isWatchlist' ? `
                 <div class="main-navigation__items">
                     <a href="#all" class="main-navigation__item" data-name="all-films">All movies</a>
                     <a href="#watchlist" class="main-navigation__item main-navigation__item--active" data-name="isWatchlist">Watchlist <span class="main-navigation__item-count">${navFilmsCount.isWatchlist}</span></a>
                     <a href="#history" class="main-navigation__item" data-name="isWatched">History <span class="main-navigation__item-count">${navFilmsCount.isWatched}</span></a>
                     <a href="#favorites" class="main-navigation__item" data-name="isFavorite">Favorites <span class="main-navigation__item-count">${navFilmsCount.isFavorite}</span></a>
-                </div> ` : ''}
+                </div>
+                <a href="#stats" class="main-navigation__additional" data-name="stats">Stats</a>` : ''}
                 ${active === 'isWatched' ? `
                 <div class="main-navigation__items">
                     <a href="#all" class="main-navigation__item" data-name="all-films">All movies</a>
                     <a href="#watchlist" class="main-navigation__item" data-name="isWatchlist">Watchlist <span class="main-navigation__item-count">${navFilmsCount.isWatchlist}</span></a>
                     <a href="#history" class="main-navigation__item main-navigation__item--active" data-name="isWatched">History <span class="main-navigation__item-count">${navFilmsCount.isWatched}</span></a>
                     <a href="#favorites" class="main-navigation__item" data-name="isFavorite">Favorites <span class="main-navigation__item-count">${navFilmsCount.isFavorite}</span></a>
-                </div> ` : ''}
+                </div>
+                <a href="#stats" class="main-navigation__additional" data-name="stats">Stats</a>` : ''}
                 ${active === 'isFavorite' ? `
                 <div class="main-navigation__items">
                     <a href="#all" class="main-navigation__item" data-name="all-films">All movies</a>
                     <a href="#watchlist" class="main-navigation__item" data-name="isWatchlist">Watchlist <span class="main-navigation__item-count">${navFilmsCount.isWatchlist}</span></a>
                     <a href="#history" class="main-navigation__item" data-name="isWatched">History <span class="main-navigation__item-count">${navFilmsCount.isWatched}</span></a>
                     <a href="#favorites" class="main-navigation__item main-navigation__item--active" data-name="isFavorite">Favorites <span class="main-navigation__item-count">${navFilmsCount.isFavorite}</span></a>
-                </div> ` : ''}
-                <a href="#stats" class="main-navigation__additional">Stats</a>
+                </div>
+                <a href="#stats" class="main-navigation__additional" data-name="stats">Stats</a>` : ''}
+                ${active === 'stats' ? `
+                <div class="main-navigation__items">
+                    <a href="#all" class="main-navigation__item" data-name="all-films">All movies</a>
+                    <a href="#watchlist" class="main-navigation__item" data-name="isWatchlist">Watchlist <span class="main-navigation__item-count">${navFilmsCount.isWatchlist}</span></a>
+                    <a href="#history" class="main-navigation__item" data-name="isWatched">History <span class="main-navigation__item-count">${navFilmsCount.isWatched}</span></a>
+                    <a href="#favorites" class="main-navigation__item main-navigation__item" data-name="isFavorite">Favorites <span class="main-navigation__item-count">${navFilmsCount.isFavorite}</span></a>
+                </div>
+                <a href="#stats" class="main-navigation__additional main-navigation__additional--active" data-name="stats">Stats</a>` : ''}
             </nav>`
 }
 
@@ -81,9 +92,14 @@ export default class SiteMenuView extends AbstractView {
         })
 
         const activeMenuFilter = evt.target.getAttribute('data-name')
+
         evt.target.classList.add('main-navigation__item--active')
         if (activeMenuFilter) {
             this._callback.editClick?.(activeMenuFilter)
+        }
+
+        if (evt.target.classList.contains('main-navigation__additional')) {
+            this._callback.editClick?.('stats')
         }
     }
 }

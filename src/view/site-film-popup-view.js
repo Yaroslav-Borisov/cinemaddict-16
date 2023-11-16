@@ -80,7 +80,7 @@ const createFilmPopupTemplate = (filmCard) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${duration}</td>
+                <td class="film-details__cell">${parseInt(duration/60)}h ${parseInt(duration - (duration/60).toFixed(0)*60)}m</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>
@@ -112,7 +112,7 @@ const createFilmPopupTemplate = (filmCard) => {
 
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsNumber}</span></h3>
+          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
 
           <ul class="film-details__comments-list">
@@ -164,6 +164,7 @@ const createFilmPopupTemplate = (filmCard) => {
 
 export default class SiteFilmPopupView extends SmartView {
   _callback = {}
+  _data = null
 
   constructor(film) {
     super()
@@ -220,6 +221,14 @@ export default class SiteFilmPopupView extends SmartView {
     })
   }
 
+  // setCommentDeleteHandler = (callback) => {
+  //   this._callback.deleteComment = callback
+  //   this.element.querySelector('.film-details__comment-delete').addEventListener('click', (evt) => {
+  //     evt.preventDefault()
+  //     console.log('hi')
+  //   })
+  // }
+
   #closeClickHandler = (evt) => {
     evt.preventDefault()
     this._callback.closeClick()
@@ -256,6 +265,7 @@ export default class SiteFilmPopupView extends SmartView {
     this.setWatchListClickHandler(this._callback.watchListClick);
     this.setEmojiChangeHandler()
     this.setTextChangeHandler()
-    this.setCommentAddHandler(this._callback.addComment);
+    this.setCommentAddHandler(this._callback.addComment)
+    // this.setCommentDeleteHandler(this._callback.deleteComment);
   }
 }

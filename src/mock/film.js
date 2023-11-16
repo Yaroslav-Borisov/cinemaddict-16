@@ -119,12 +119,15 @@ export const generateFilm = () => {
     const [filmTitle, filmOriginalTitle] = filmTitleElement
     const commentsNumber = getRandomInt(0, 5)
     const comments = Array.from({ length: commentsNumber }, generateComment)
+    const isWatched = getRandomBoolean()
+    const watchingDate = (isWatched === true) && getRandomPastDate(2, 365)
 
     return {
         id: nanoid(),
         isWatchlist: getRandomBoolean(),
-        isWatched: getRandomBoolean(),
+        isWatched: isWatched,
         isFavorite: getRandomBoolean(),
+        watchingDate: watchingDate,
         image: getRandomElementArr(FILM_POSTERS),
         title: filmTitle,
         originalTitle: filmOriginalTitle,
@@ -133,7 +136,7 @@ export const generateFilm = () => {
         screenwriters: generateNamesList(FILM_CAST_NAMES),
         cast: generateNamesList(FILM_CAST_NAMES),
         releaseYear: generateDate(),
-        duration: getRandomElementArr(FILM_DURATIONS),
+        duration: getRandomInt(60, 120),
         genres: generateGenreList(FILM_GENRES),
         description: generateDescription(),
         country: generateCountriesList(FILM_COUNTRIES),
