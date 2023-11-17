@@ -34,6 +34,7 @@ export default class FilmsListPresenter {
 
     constructor(filmsListContainer, filmsModel) {
         this.#filmsListContainer = filmsListContainer
+
         this.#filmsModel = filmsModel
     }
 
@@ -83,11 +84,6 @@ export default class FilmsListPresenter {
         this.#initMenuFiltersEvents()
         this.#initSortFiltersEvents()
     }
-
-    // destroy = () => {
-    //     // this.#clearSortFilters()
-    //     this.#clearFilmList()
-    // }
 
     #renderMenuFilters = () => {
         if (this.#menuComponent !== null) {

@@ -14,10 +14,10 @@ const createFilmPopupTemplate = (filmCard) => {
   const renderFilmPopupComments = (comments = []) => comments
     .slice()
     .map((commentItem) => {
-      const { emotion, comment, author, date } = commentItem;
+      const { id, emotion, comment, author, date } = commentItem;
       const humanizedCommentDate = formatCommentDate(date);
 
-      return `<li class="film-details__comment">
+      return `<li class="film-details__comment" data-comment-id="${id}">
       <span class="film-details__comment-emoji">
         <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
       </span>
@@ -40,10 +40,10 @@ const createFilmPopupTemplate = (filmCard) => {
         </div>
         <div class="film-details__info-wrap">
           <div class="film-details__poster">
-            <img class="film-details__poster-img" src="./images/posters/${image}" alt="${title}">
+            <img class="film-details__poster-img" src="./${image}" alt="${title}">
 
 
-            <p class="film-details__age">${ageRating}</p>
+            <p class="film-details__age">${ageRating}+</p>
           </div>
 
 
@@ -68,15 +68,15 @@ const createFilmPopupTemplate = (filmCard) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Writers</td>
-                <td class="film-details__cell">${screenwriters}</td>
+                <td class="film-details__cell">${screenwriters.join(', ')}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Actors</td>
-                <td class="film-details__cell">${cast}</td>
+                <td class="film-details__cell">${cast.join(', ')}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">${releaseYear}</td>
+                <td class="film-details__cell">${releaseYear.toLocaleDateString()}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
@@ -112,7 +112,7 @@ const createFilmPopupTemplate = (filmCard) => {
 
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
+          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsNumber}</span></h3>
 
 
           <ul class="film-details__comments-list">

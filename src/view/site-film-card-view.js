@@ -5,18 +5,19 @@ const createFilmCardTemplate = (film) => {
     const { title, rating, releaseYear, duration, genres, image, description, commentsNumber, isWatchlist, isWatched, isFavorite } = film
     const durationHours = Math.trunc(duration / 60)
     const minutes = duration - 60 * durationHours
+    const shortDescription = (description.length > 140) ? `${description.slice(0, 139)}...` : description;
 
     return `<article class="film-card">
                 <a class="film-card__link">
                 <h3 class="film-card__title">${title}</h3>
                 <p class="film-card__rating">${rating}</p>
                 <p class="film-card__info">
-                    <span class="film-card__year">${releaseYear}</span>
+                    <span class="film-card__year">${releaseYear.getFullYear()}</span>
                     <span class="film-card__duration">${durationHours}h ${minutes}m</span>
                     <span class="film-card__genre">${genres[0]}</span>
                 </p>
-                <img src="./images/posters/${image}" alt="" class="film-card__poster">
-                <p class="film-card__description">${description}</p>
+                <img src="./${image}" alt="" class="film-card__poster">
+                <p class="film-card__description">${shortDescription}..</p>
                 <span class="film-card__comments">${commentsNumber} comments</span>
                 </a>
                 <div class="film-card__controls">
